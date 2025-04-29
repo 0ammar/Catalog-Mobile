@@ -9,10 +9,10 @@ import { Item } from '@/Types';
 
 export default function SubOneScreen() {
   const router = useRouter();
-  const { groupId } = useLocalSearchParams();
+  const { groupId, origin } = useLocalSearchParams<{ groupId: string; origin?: string }>();
   const id = Number(groupId);
 
-  useSmartBack('/');
+  useSmartBack(origin || '/GroupsScreen');
 
   if (!id || isNaN(id)) {
     return (
@@ -20,8 +20,8 @@ export default function SubOneScreen() {
         loading={false}
         error
         empty
-        emptyTitle="Invalid Group ID"
-        emptySubtitle="Please go back and try again."
+        emptyTitle="معرّف المجموعة غير صالح"
+        emptySubtitle="الرجاء العودة والمحاولة مرة أخرى."
       >
         <></>
       </ScreenContainer>
@@ -39,7 +39,7 @@ export default function SubOneScreen() {
   const {
     data: items,
     query,
-    setQuery,    
+    setQuery,
     searchTerm,
     triggerSearch,
     loading: loadingItems,
@@ -68,18 +68,18 @@ export default function SubOneScreen() {
       loading={loading}
       error={!!error}
       empty={isEmptySearch || isEmptySubOnes}
-      emptyTitle={isEmptySearch ? 'No items found' : 'No categories found'}
+      emptyTitle={isEmptySearch ? 'لا توجد أصناف مطابقة' : 'لا توجد تصنيفات فرعية'}
       emptySubtitle={
         isEmptySearch
-          ? 'Try a different name or item number.'
-          : 'This group has no sub-categories.'
+          ? 'حاول البحث باسم أو رقم صنف مختلف.'
+          : 'لا توجد تصنيفات فرعية ضمن هذه المجموعة.'
       }
     >
       <SearchBar
         value={query}
         onChange={setQuery}
         onSubmit={() => triggerSearch(query)}
-        placeholder="يمكنك ادخال اسم او رقم الصنف للعثور عليه"
+        placeholder="يمكنك إدخال اسم أو رقم الصنف للعثور عليه"
       />
 
       {!query && groupName && <CategoryTitle name={groupName} />}
@@ -98,8 +98,11 @@ export default function SubOneScreen() {
           onPress={(subOneId) =>
             router.push({
               pathname: '/SubTwosScreen/[subOneId]',
-              params: { subOneId: String(subOneId) },
-            } as const)
+              params: {
+                subOneId: String(subOneId),
+                origin: `/SubOnesScreen/${id}`,
+              },
+            })
           }
         />
       ) : null}

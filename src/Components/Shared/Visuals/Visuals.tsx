@@ -1,10 +1,10 @@
 import { View, Text, Image, Modal, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import  {styles}  from './Visuals.styles';
+import { styles } from './Visuals.styles';
 
 export function EmptyState({
-  title = 'No Content Available',
-  subtitle = 'There is nothing to show here right now.',
+  title = 'لا يوجد محتوى متاح',
+  subtitle = 'لا توجد بيانات لعرضها حالياً.',
 }: {
   title?: string;
   subtitle?: string;
@@ -42,7 +42,11 @@ export function ImagePreviewModal({
           <Pressable style={styles.closeButton} onPress={onClose}>
             <Ionicons name="close" size={28} color="#fff" />
           </Pressable>
-          <Image source={{ uri: imageUrl }} style={styles.image} resizeMode="contain" />
+          <Image
+            source={{ uri: imageUrl }}
+            style={styles.image}
+            resizeMode="contain"
+          />
         </View>
       </View>
     </Modal>

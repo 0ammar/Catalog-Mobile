@@ -1,16 +1,15 @@
 import { View, Text, Image, ScrollView, Pressable } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useState } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useImagePicker } from '@/Hooks';
 import { CustomAlertModal } from '@/Components/UI';
-import { styles } from '@/Theme/ItemStyles/edit.styles';
+import { styles } from '@/Theme/ItemStyles/upload.styles';
 import { colors } from '@/Theme/colors';
 import { uploadItemImages } from '@/Services/APIs';
 
 export default function UploadItemImagesScreen() {
-  const { itemNo } = useLocalSearchParams();
+  const { itemNo, origin } = useLocalSearchParams<{ itemNo: string; origin?: string }>();
   const router = useRouter();
 
   const {
@@ -19,10 +18,38 @@ export default function UploadItemImagesScreen() {
     uploading,
     setUploading,
     setImages,
+    modalVisible,
+    modalData,
+    closeModal,
+    showModal,
   } = useImagePicker();
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalData, setModalData] = useState({ title: '', message: '' });
+  const handleUploadImages = async () => {
+    if (images.length === 0 || !itemNo) return;
+
+    try {
+      setUploading(true);
+      await uploadItemImages(itemNo, images);
+
+      router.replace({
+        pathname: `/ItemDetails/[itemNo]`,
+        params: {
+          itemNo,
+          origin: origin || '/GroupsScreen',
+          refetch: '1',
+        },
+      });
+    } catch (error) {
+      console.error('❌ Upload error:', error);
+      showModal('❌ خطأ في الرفع', 'حدث خلل أثناء رفع الصور. تأكد من الاتصال وحاول مجددًا.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleDeleteImage = (uriToRemove: string) => {
+    setImages((prev) => prev.filter((uri) => uri !== uriToRemove));
+  };
 
   if (!itemNo) {
     return (
@@ -32,67 +59,33 @@ export default function UploadItemImagesScreen() {
     );
   }
 
-  const uploadImages = async () => {
-    if (images.length === 0) return;
-
-    try {
-      setUploading(true);
-
-      const formData = new FormData();
-      images.forEach((uri, index) => {
-        formData.append('newImages', {
-          uri,
-          name: `image${index}.jpg`,
-          type: 'image/jpeg',
-        } as any);
-      });
-
-      await uploadItemImages(itemNo as string, images);
-
-      // ✅ بعد رفع الصور، ارجع لشاشة التفاصيل مع إعادة تحميل الصور
-      router.replace(`/ItemDetails/${itemNo}?refetch=1`);
-    } catch (error) {
-      console.log('Upload error:', error);
-      setModalData({
-        title: '❌ خطأ في الرفع',
-        message: 'حدث خلل أثناء رفع الصور، تأكد من الاتصال وجرب مرة أخرى.',
-      });
-      setModalVisible(true);
-    } finally {
-      setUploading(false);
-    }
-  };
-
-  const handleDelete = (uriToRemove: string) => {
-    setImages((prev) => prev.filter((uri) => uri !== uriToRemove));
-  };
-
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* اختيار الصور */}
       <Pressable onPress={pickImages} style={styles.pickBtn}>
         <View style={styles.btnRow}>
           <Text style={styles.pickBtnText}>اختر الصور</Text>
         </View>
       </Pressable>
 
+      {/* عرض الصور المختارة */}
       <View style={styles.previewList}>
         {images.map((uri, index) => (
           <View key={index.toString()} style={styles.imageWrapper}>
             <Image source={{ uri }} style={styles.image} resizeMode="cover" />
-            <Pressable onPress={() => handleDelete(uri)} style={styles.deleteIcon}>
+            <Pressable onPress={() => handleDeleteImage(uri)} style={styles.deleteIcon}>
               <Ionicons name="close-circle" size={22} color={colors.primary} />
             </Pressable>
           </View>
         ))}
       </View>
 
+      {/* زر الرفع */}
       <Pressable
-        onPress={uploadImages}
+        onPress={handleUploadImages}
         style={[
           styles.uploadBtn,
-          {
-            backgroundColor: uploading || images.length === 0 ? '#ccc' : colors.primary,
-          },
+          { backgroundColor: uploading || images.length === 0 ? '#ccc' : colors.primary },
         ]}
         disabled={uploading || images.length === 0}
       >
@@ -103,11 +96,12 @@ export default function UploadItemImagesScreen() {
         </View>
       </Pressable>
 
+      {/* المودال */}
       <CustomAlertModal
         isVisible={modalVisible}
         title={modalData.title}
         message={modalData.message}
-        onClose={() => setModalVisible(false)}
+        onClose={closeModal}
       />
     </ScrollView>
   );

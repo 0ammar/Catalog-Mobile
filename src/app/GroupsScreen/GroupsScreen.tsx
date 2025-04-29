@@ -66,7 +66,7 @@ export default function GroupsScreen() {
           page={page}
           hasMore={hasMore}
           setPage={setPage}
-          origin="/GroupsScreen"
+          origin="/GroupsScreen/GroupsScreen"
         />
 
       ) : showCategories ? (
@@ -75,8 +75,8 @@ export default function GroupsScreen() {
           onPress={(groupId) =>
             router.push({
               pathname: '/SubOnesScreen/[groupId]',
-              params: { groupId: String(groupId) },
-            })
+              params: { groupId: String(groupId), origin: '/GroupsScreen' },
+            })    
           }
         />
 

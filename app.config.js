@@ -25,7 +25,7 @@ export default {
     web: {
       bundler: "metro",
       output: "static",
-      favicon: "./src/Assets/images/app-icon.png"
+      favicon: "./src/Assets/images/header.png"
     },
 
     plugins: [
@@ -33,7 +33,7 @@ export default {
       [
         "expo-splash-screen",
         {
-          image: "./src/Assets/images/app-icon.png",
+          image: "./src/Assets/images/header.png",
           imageWidth: 200,
           resizeMode: "contain",
           backgroundColor: '#f8f9fa'

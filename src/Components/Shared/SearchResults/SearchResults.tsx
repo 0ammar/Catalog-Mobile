@@ -1,4 +1,3 @@
-// SearchResults.tsx
 import { View } from 'react-native';
 import { ItemsGrid } from '@/Components/UI';
 import { PaginationControls } from '@/Components/UI';

@@ -5,7 +5,7 @@ import { styles } from './CategorySection.styles';
 export function CategoryTitle({ name }: { name: string }) {
   return (
     <View style={styles.titleWrapper}>
-      <Text style={styles.titleText}>({name})</Text>
+      <Text style={styles.titleText}>{name}</Text>
       <View style={styles.titleUnderline} />
     </View>
   );

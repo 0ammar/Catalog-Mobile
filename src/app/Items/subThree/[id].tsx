@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
-import {  Header,  PaginationControls,  SearchBar,  LoadingState, ItemsGrid,} from '@/Components/UI';
+import { Header, PaginationControls, SearchBar, LoadingState, ItemsGrid } from '@/Components/UI';
 import { EmptyState } from '@/Components/Shared/Visuals/Visuals';
 
 import { useSearchList, useSmartBack } from '@/Hooks';
@@ -11,7 +11,7 @@ export default function ItemsScreen() {
   const { id, origin } = useLocalSearchParams<{ id: string; origin?: string }>();
   const numericId = Number(id);
 
-  useSmartBack(origin as any);
+  useSmartBack(origin || `/SubThreesScreen/${id}`);
 
   const {
     data: items,
@@ -36,31 +36,31 @@ export default function ItemsScreen() {
   const isEmpty = query.trim() === searchTerm && items.length === 0;
 
   return (
-    <View style={{ flex: 1}}>
+    <View style={{ flex: 1 }}>
       <Header />
 
       <SearchBar
         value={query}
         onChange={setQuery}
         onSubmit={() => triggerSearch(query)}
-        placeholder="يمكنك ادخال اسم او رقم الصنف للعثور عليه"
+        placeholder="يمكنك إدخال اسم أو رقم الصنف للعثور عليه"
       />
 
       {loading ? (
-        <LoadingState message="Loading items..." />
+        <LoadingState message="جاري تحميل الأصناف..." />
       ) : error ? (
         <EmptyState
-          title="Something went wrong"
-          subtitle="Please check your connection or try again later."
+          title="حدث خطأ ما"
+          subtitle="يرجى التحقق من الاتصال أو المحاولة لاحقًا."
         />
       ) : isEmpty ? (
         <EmptyState
-          title="No items found"
-          subtitle="Try a different search term."
+          title="لم يتم العثور على أصناف"
+          subtitle="حاول استخدام كلمة بحث مختلفة."
         />
       ) : (
         <>
-          <ItemsGrid items={items} origin="/Items/subThree/[id]" />
+          <ItemsGrid items={items} origin={`/Items/subThree/${id}`} />
           <PaginationControls
             page={page}
             hasMore={hasMore}

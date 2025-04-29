@@ -1,19 +1,19 @@
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { ScreenContainer, SearchBar, ItemsGrid, PaginationControls, } from '@/Components/UI';
-import { CategoryGridSection, CategoryTitle, } from '@/Components/Shared';
+import { ScreenContainer, SearchBar, ItemsGrid, PaginationControls } from '@/Components/UI';
+import { CategoryGridSection, CategoryTitle } from '@/Components/Shared';
 
-import { useSubThrees, useSearchList, useSmartBack, } from '@/Hooks';
+import { useSubThrees, useSearchList, useSmartBack } from '@/Hooks';
 import { getItems, getSubTwos } from '@/Services/APIs';
 import { Item } from '@/Types'
 
 export default function SubThreesScreen() {
   const router = useRouter();
-  const { subTwoId } = useLocalSearchParams();
+  const { subTwoId, origin } = useLocalSearchParams<{ subTwoId: string; origin?: string }>();
   const id = Number(subTwoId);
 
-  useSmartBack(`/SubTwosScreen/${id}`);
+  useSmartBack(origin || `/SubTwosScreen/${id}`);
 
   const {
     data: subThrees = [],
@@ -51,8 +51,7 @@ export default function SubThreesScreen() {
     }
   }, [id]);
 
-  const isEmptySearch =
-    !!searchTerm && query.trim() === searchTerm && items.length === 0;
+  const isEmptySearch = !!searchTerm && query.trim() === searchTerm && items.length === 0;
   const isEmptySubThrees = !searchTerm && Array.isArray(subThrees) && subThrees.length === 0;
 
   const loading = searchLoading || subThreesLoading;
@@ -65,18 +64,18 @@ export default function SubThreesScreen() {
       loading={loading}
       error={error}
       empty={isEmptySearch || isEmptySubThrees}
-      emptyTitle={isEmptySearch ? 'No items found' : 'No categories found'}
+      emptyTitle={isEmptySearch ? 'لا توجد أصناف مطابقة' : 'لا توجد تصنيفات فرعية'}
       emptySubtitle={
         isEmptySearch
-          ? 'Try a different name or item number.'
-          : 'This section has no sub-categories.'
+          ? 'حاول البحث باسم أو رقم صنف مختلف.'
+          : 'لا توجد تصنيفات فرعية ضمن هذا القسم.'
       }
     >
       <SearchBar
         value={query}
         onChange={setQuery}
         onSubmit={() => triggerSearch(query)}
-        placeholder="يمكنك ادخال اسم او رقم الصنف للعثور عليه"
+        placeholder="يمكنك إدخال اسم أو رقم الصنف للعثور عليه"
       />
 
       {!query && subTwoName && <CategoryTitle name={subTwoName} />}
@@ -94,10 +93,13 @@ export default function SubThreesScreen() {
       ) : showSubThrees ? (
         <CategoryGridSection
           data={subThrees}
-          onPress={(id) =>
+          onPress={(subThreeId) =>
             router.push({
               pathname: '/Items/subThree/[id]',
-              params: { id },
+              params: {
+                id: subThreeId,
+                origin: `/SubThreesScreen/${id}`,
+              },
             })
           }
         />
