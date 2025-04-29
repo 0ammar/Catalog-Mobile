@@ -9,3 +9,4 @@ export { default as PaginationControls } from './PaginationControls/PaginationCo
 export { default as Header } from './Header/Header';
 export { default as CenteredScreen } from './CenteredScreen/CenteredScreen';
 export { default as InputField } from './InputField/InputField';
+export { ImageCarousel } from './ImageCarousel';

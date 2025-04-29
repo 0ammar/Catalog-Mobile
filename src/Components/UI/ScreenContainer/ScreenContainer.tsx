@@ -1,4 +1,3 @@
-// ScreenContainer.tsx
 import React from 'react';
 import { View } from 'react-native';
 import Header from '../Header/Header';
@@ -28,7 +27,7 @@ export const ScreenContainer = ({
     if (loading) {
       return (
         <CenteredScreen>
-          <LoadingState message="Loading..." />
+          <LoadingState message="جاري التحميل..." />
         </CenteredScreen>
       );
     }
@@ -37,8 +36,8 @@ export const ScreenContainer = ({
       return (
         <CenteredScreen>
           <EmptyState
-            title="Something went wrong"
-            subtitle="Check your internet connection and try again."
+            title="حدث خطأ ما"
+            subtitle="تأكد من اتصالك بالإنترنت وحاول مرة أخرى."
           />
         </CenteredScreen>
       );
@@ -48,8 +47,8 @@ export const ScreenContainer = ({
       return (
         <CenteredScreen>
           <EmptyState
-            title={emptyTitle || 'No items found'}
-            subtitle={emptySubtitle || 'Try a different name or item number.'}
+            title={emptyTitle || 'لا توجد عناصر'}
+            subtitle={emptySubtitle || 'جرب اسمًا مختلفًا أو رقم منتج آخر.'}
           />
         </CenteredScreen>
       );

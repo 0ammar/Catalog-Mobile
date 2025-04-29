@@ -22,25 +22,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  pickBtn: {
-    backgroundColor: "#1a1a1a",
-    padding: spaces.md - 4,
-    borderRadius: spaces.rMd,
-    marginBottom: spaces.md + 4,
-    alignItems: 'center',
-  },
-
-  pickBtnText: {
-    color: '#fff',
-    fontSize: texts.regular + 1,
-  },
-
-  btnRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spaces.xs + 4,
-  },
-
   previewList: {
     marginTop: spaces.md + 4,
   },
@@ -75,6 +56,12 @@ export const styles = StyleSheet.create({
 
   uploadBtnText: {
     color: '#fff',
-    fontSize: texts.regular + 1,
+    fontSize: texts.regular,
+  },
+
+  btnRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spaces.xs,
   },
 });

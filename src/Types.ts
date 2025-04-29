@@ -43,3 +43,10 @@ export type LoginPayload = {
   username: string;
   password: string;
 };
+
+export type ItemStatuses = {
+  id: number;
+  name: string;
+  code: string;
+  iconUrl: string;
+}

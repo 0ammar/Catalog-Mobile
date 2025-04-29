@@ -1,4 +1,3 @@
-// ItemCard.tsx
 import { Text, Image, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import { Item } from '@/Types';

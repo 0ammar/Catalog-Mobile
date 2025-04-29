@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
   modalContent: {
     width: width * 0.9,
     height: height * 0.8,
-    backgroundColor: '#111', // intentionally kept dark
+    backgroundColor: '#111',
     borderRadius: spaces.rMd,
     overflow: 'hidden',
     justifyContent: 'center',

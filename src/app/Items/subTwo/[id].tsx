@@ -1,7 +1,7 @@
 import { View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
-import { Header, SearchBar, PaginationControls, LoadingState, ItemsGrid, } from '@/Components/UI';
+import { Header, SearchBar, PaginationControls, LoadingState, ItemsGrid } from '@/Components/UI';
 import { EmptyState } from '@/Components/Shared';
 
 import { useSearchList, useSmartBack } from '@/Hooks';
@@ -11,7 +11,7 @@ export default function ItemsScreen() {
   const { id, origin } = useLocalSearchParams<{ id: string; origin?: string }>();
   const numericId = Number(id);
 
-  useSmartBack(origin as any);
+  useSmartBack(origin || `/SubTwosScreen/${id}`);
 
   const {
     data: items,
@@ -40,24 +40,24 @@ export default function ItemsScreen() {
         value={query}
         onChange={setQuery}
         onSubmit={() => triggerSearch(query)}
-        placeholder="يمكنك ادخال اسم او رقم الصنف للعثور عليه"
+        placeholder="يمكنك إدخال اسم أو رقم الصنف للعثور عليه"
       />
 
       {loading ? (
-        <LoadingState message="Loading items..." />
+        <LoadingState message="جاري تحميل الأصناف..." />
       ) : error ? (
         <EmptyState
-          title="Something went wrong"
-          subtitle="Please check your connection or try again later."
+          title="حدث خطأ ما"
+          subtitle="يرجى التحقق من الاتصال أو المحاولة لاحقًا."
         />
       ) : items.length === 0 ? (
         <EmptyState
-          title="No items found"
-          subtitle="Try a different search term."
+          title="لم يتم العثور على أصناف"
+          subtitle="حاول استخدام كلمة بحث مختلفة."
         />
       ) : (
         <>
-          <ItemsGrid items={items} origin="/Items/subTwo/[id]" />
+          <ItemsGrid items={items} origin={`/Items/subTwo/${id}`} />
           <PaginationControls
             page={page}
             hasMore={hasMore}

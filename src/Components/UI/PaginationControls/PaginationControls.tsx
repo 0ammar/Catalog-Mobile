@@ -1,4 +1,3 @@
-// PaginationControls.tsx
 import { View, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { colors } from '@/Theme/colors';
@@ -42,7 +41,7 @@ export default function PaginationControls({
         disabled={!hasMore}
         style={[
           styles.button,
-          { backgroundColor: hasMore ? colors.primary : colors.text },
+          { backgroundColor: hasMore ? colors.primary : colors.borderDark },
         ]}
       >
         <Icon name="arrow-forward" size={20} color="#fff" />

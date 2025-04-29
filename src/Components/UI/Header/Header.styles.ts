@@ -1,21 +1,17 @@
 import { StyleSheet } from 'react-native';
-import { colors, spaces } from '@/Theme';
+import { colors, spaces, texts } from '@/Theme';
 
 export const styles = StyleSheet.create({
   header: {
-    height: 50,
+    height: 65,
     paddingVertical: spaces.md,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomStartRadius: spaces.rLg,
     borderBottomEndRadius: spaces.rLg,
     zIndex: 10,
-    paddingTop: 8,
-    paddingBottom: 8,
     position: 'relative',
     backgroundColor: colors.background,
-    alignContent: 'center',
-    textAlign: 'center',
   },
 
   logo: {
@@ -28,30 +24,62 @@ export const styles = StyleSheet.create({
   sideLineLeft: {
     position: 'absolute',
     left: 25,
-    top: '100%',
+    bottom: '60%',
     width: 100,
     height: 1.5,
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
   },
 
   sideLineRight: {
     position: 'absolute',
     right: 25,
-    top: '100%',
+    bottom: '60%',
     width: 100,
     height: 1.5,
     backgroundColor: 'rgba(0,0,0,0.3)',
     borderRadius: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
+  },
+
+  userIcon: {
+    position: 'absolute',
+    left: 65,
+    top: 10,
+    zIndex: 20,
+  },
+
+  focusedIcon: {
+    position: 'absolute',
+    right: 65,
+    top: 10,
+    zIndex: 20,
+  },
+
+  newIcon: {
+    position: 'absolute',
+    right: 25,
+    top: 10,
+    zIndex: 20,
+  },
+
+  profileIcon: {
+    position: 'absolute',
+    left: 65,
+    top: 10,
+    zIndex: 20,
+  },
+
+  logoutIcon: {
+    position: 'absolute',
+    left: 25,
+    top: 10,
+    zIndex: 20,
+  },
+
+  iconImage: {
+    width: 25,
+    height: 25,
   },
 });

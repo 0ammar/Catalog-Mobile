@@ -34,7 +34,7 @@ export function useSearchList<T>(
     debounceTimer.current = setTimeout(() => {
       setPage(1);
       setSearchTerm(query.trim());
-    }, 1000);
+    }, 800);
   }, [query]);
 
   useEffect(() => {

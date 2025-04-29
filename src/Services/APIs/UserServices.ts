@@ -1,4 +1,3 @@
-// src/Services/APIs/UserService.ts
 import { api } from "@/Services/api";
 import { LoginPayload } from '@/Types'
 
