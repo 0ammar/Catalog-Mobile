@@ -1,35 +1,50 @@
 export type Group = {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
 };
 
 export type SubOne = {
-  id: number;
+  id: string;
   imageUrl: string;
   name: string;
+  groupId: string;
 };
 
 export type SubTwo = {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
-  subOneId: number;
+  groupId: string;
+  subOneId: string;
 };
 
 export type SubThree = {
-  id: number;
+  id: string;
   name: string;
   imageUrl: string;
-  subTwoId: number;
+  groupId: string;
+  subOneId: string;
+  subTwoId: string;
 };
 
 export type Item = {
   itemNo: string;
   name: string;
   firstImage: string;
-  subTwoId?: number;
-  subThreeId?: number;
+  groupId: string;
+  subOneId: string;
+  subTwoId?: string;
+  subThreeId?: string;
+  status?: ItemStatuses;
+  description?: string;
+};
+
+export type GetItemsDto = {
+  itemNo: string;
+  name: string;
+  firstImage: string;
+  status: ItemStatuses | null;
 };
 
 export type GetItemDto = {
@@ -45,8 +60,8 @@ export type LoginPayload = {
 };
 
 export type ItemStatuses = {
-  id: number;
+  id: string;
   name: string;
   code: string;
   iconUrl: string;
-}
+};

@@ -68,6 +68,12 @@ export function useAuth() {
     router.replace('/GroupsScreen/GroupsScreen');
   };
 
+  const handleLogout = async () => {
+    await AsyncStorage.removeItem('token');
+    setRole(null);
+    router.replace('/');
+  };
+
   const isAdmin = role === 'Admin' || role === 'admin';
 
   return {
@@ -75,5 +81,6 @@ export function useAuth() {
     isAdmin,
     handleAdminLogin,
     handleGuestAccess,
+    handleLogout,
   };
 }

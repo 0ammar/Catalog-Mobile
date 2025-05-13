@@ -1,25 +1,55 @@
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 
-import { ScreenContainer, SearchBar, ItemsGrid, PaginationControls } from '@/Components/UI';
+import {
+  ScreenContainer,
+  SearchBar,
+  ItemsGrid,
+  PaginationControls,
+} from '@/Components/UI';
 import { CategoryGridSection, CategoryTitle } from '@/Components/Shared';
 
 import { useSubThrees, useSearchList, useSmartBack } from '@/Hooks';
-import { getItems, getSubTwos } from '@/Services/APIs';
-import { Item } from '@/Types'
+import { searchItemsGlobal , getSubTwos } from '@/Services/APIs';
+import { Item, SubTwo } from '@/Types';
 
 export default function SubThreesScreen() {
   const router = useRouter();
-  const { subTwoId, origin } = useLocalSearchParams<{ subTwoId: string; origin?: string }>();
-  const id = Number(subTwoId);
+  const { subTwoId, origin, subOneId, groupId } = useLocalSearchParams<{
+    subTwoId: string;
+    subOneId: string;
+    groupId: string;
+    origin?: string;
+  }>();
 
-  useSmartBack(origin || `/SubTwosScreen/${id}`);
+  const groupIdStr = String(groupId);
+  const subOneIdStr = String(subOneId);
+  const subTwoIdStr = String(subTwoId);
+
+  useSmartBack(origin || `/SubTwosScreen/${subOneIdStr}`);
+
+  const [subTwoName, setSubTwoName] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!query && groupIdStr && subOneIdStr && subTwoIdStr) {
+      getSubTwos(groupIdStr, subOneIdStr)
+        .then((data: SubTwo[]) => {
+          const matched = data.find((s) => s.id === subTwoIdStr);
+          if (matched) {
+            setSubTwoName(matched.name);
+          }
+        })
+        .catch((err) => {
+          console.error('Error fetching SubTwo name:', err);
+        });
+    }
+  }, [groupIdStr, subOneIdStr, subTwoIdStr]);
 
   const {
-    data: subThrees = [],
-    loading: subThreesLoading,
-    error: subThreesError,
-  } = useSubThrees(id);
+    data: subThrees,
+    loading: loadingSubThrees,
+    error: errorSubThrees,
+  } = useSubThrees(groupIdStr, subOneIdStr, subTwoIdStr);
 
   const {
     data: items,
@@ -27,43 +57,37 @@ export default function SubThreesScreen() {
     setQuery,
     searchTerm,
     triggerSearch,
-    loading: searchLoading,
-    error: searchError,
+    loading: loadingItems,
+    error: errorItems,
     page,
-    hasMore,
     setPage,
+    hasMore,
   } = useSearchList<Item>(
-    (page, searchTerm) => getItems(id, 'subThree', page, searchTerm),
-    { skipSearchIfEmpty: true }
+    (page, term) => searchItemsGlobal(term, page),
+    {
+      isGlobalSearch: true,
+      skipSearchIfEmpty: true,
+    }
   );
 
-  const [subTwoName, setSubTwoName] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!query) {
-      getSubTwos(id)
-        .then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
-            setSubTwoName(data[0].name);
-          }
-        })
-        .catch(() => { });
-    }
-  }, [id]);
-
-  const isEmptySearch = !!searchTerm && query.trim() === searchTerm && items.length === 0;
-  const isEmptySubThrees = !searchTerm && Array.isArray(subThrees) && subThrees.length === 0;
-
-  const loading = searchLoading || subThreesLoading;
-  const error = !!searchError || !!subThreesError;
   const showSearchResults = !!searchTerm;
-  const showSubThrees = !searchTerm && Array.isArray(subThrees) && subThrees.length > 0;
+  const isSearchActive = query.trim().length > 0;
+  const showSubThrees = !isSearchActive && (subThrees?.length ?? 0) > 0;
+  const isEmptySearch = showSearchResults && query.trim() === searchTerm && items.length === 0;
+  const isEmptySubThrees = !searchTerm && (subThrees?.length ?? 0) === 0;
 
+  const loading = loadingItems || loadingSubThrees;
+  const error = !!errorItems || !!errorSubThrees;
+  console.log('🔎 SHOW SUBTHREES CHECK', {
+    searchTerm,
+    subThreesLength: subThrees?.length ?? 0,
+    shouldShowSubThrees: showSubThrees,
+  });
   return (
     <ScreenContainer
       loading={loading}
       error={error}
-      empty={isEmptySearch || isEmptySubThrees}
+      empty={!loading && (isEmptySearch || isEmptySubThrees)}
       emptyTitle={isEmptySearch ? 'لا توجد أصناف مطابقة' : 'لا توجد تصنيفات فرعية'}
       emptySubtitle={
         isEmptySearch
@@ -80,9 +104,11 @@ export default function SubThreesScreen() {
 
       {!query && subTwoName && <CategoryTitle name={subTwoName} />}
 
+      
+
       {showSearchResults ? (
         <>
-          <ItemsGrid items={items} origin={`/SubThreesScreen/${id}`} />
+          <ItemsGrid items={items} origin={`/SubThreesScreen/${subTwoIdStr}`} />
           <PaginationControls
             page={page}
             hasMore={hasMore}
@@ -92,17 +118,23 @@ export default function SubThreesScreen() {
         </>
       ) : showSubThrees ? (
         <CategoryGridSection
-          data={subThrees}
-          onPress={(subThreeId) =>
-            router.push({
-              pathname: '/Items/subThree/[id]',
-              params: {
-                id: subThreeId,
-                origin: `/SubThreesScreen/${id}`,
-              },
-            })
-          }
-        />
+        data={subThrees ?? []}
+        onPress={(subThreeId) => {
+          console.log('🔥 SubThree clicked:', subThreeId);
+          router.push({
+            pathname: '/Items/subThree/[id]',
+            params: {
+              id: subThreeId,
+              groupId: groupIdStr,
+              subOneId: subOneIdStr,
+              subTwoId: subTwoIdStr,
+              subThreeId: subThreeId,
+              origin: `/SubThreesScreen/${subTwoIdStr}`,
+            },
+          });
+        }}
+      />
+      
       ) : null}
     </ScreenContainer>
   );

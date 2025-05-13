@@ -1,36 +1,79 @@
 import { View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
-import { Header, SearchBar, PaginationControls, LoadingState, ItemsGrid } from '@/Components/UI';
+import {
+  Header,
+  SearchBar,
+  PaginationControls,
+  LoadingState,
+  ItemsGrid,
+} from '@/Components/UI';
 import { EmptyState } from '@/Components/Shared';
 
 import { useSearchList, useSmartBack } from '@/Hooks';
 import { getItems } from '@/Services/APIs/ItemsServices';
 
 export default function ItemsScreen() {
-  const { id, origin } = useLocalSearchParams<{ id: string; origin?: string }>();
-  const numericId = Number(id);
+  const {
+    id,
+    groupId,
+    subOneId,
+    subTwoId,
+    subThreeId,
+    origin,
+  } = useLocalSearchParams<{
+    id?: string;
+    groupId?: string;
+    subOneId?: string;
+    subTwoId?: string;
+    subThreeId?: string;
+    origin?: string;
+  }>();
 
-  useSmartBack(origin || `/SubTwosScreen/${id}`);
+  const parsedGroupId = groupId?.trim() || undefined;
+  const parsedSubOneId = subOneId?.trim() || undefined;
+  const parsedSubTwoId = subTwoId?.trim() || id?.trim() || undefined;
+  const parsedSubThreeId = subThreeId?.trim() || undefined;
+
+  useSmartBack(origin || '/');
 
   const {
     data: items,
     query,
     setQuery,
+    searchTerm,
     triggerSearch,
-    loading,
-    error,
     page,
     setPage,
     hasMore,
+    loading,
+    error,
   } = useSearchList(
-    (page, searchTerm, id, type) => getItems(id, type, page, searchTerm),
+    (page, searchTerm) =>
+      getItems(
+        parsedGroupId,
+        parsedSubOneId,
+        parsedSubTwoId,
+        parsedSubThreeId,
+        page,
+        30,
+        searchTerm
+      ),
     {
-      id: numericId,
-      type: 'subTwo',
+      groupId: parsedGroupId,
+      subOneId: parsedSubOneId,
+      subTwoId: parsedSubTwoId,
+      subThreeId: parsedSubThreeId,
       skipSearchIfEmpty: true,
     }
   );
+
+  const isEmptySearch =
+    !!searchTerm && query.trim() === searchTerm && items.length === 0;
+
+  const originPath = parsedSubThreeId
+    ? `/Items/subThree/${parsedSubThreeId}`
+    : `/Items/subTwo/${parsedSubTwoId}`;
 
   return (
     <View style={{ flex: 1 }}>
@@ -50,14 +93,14 @@ export default function ItemsScreen() {
           title="حدث خطأ ما"
           subtitle="يرجى التحقق من الاتصال أو المحاولة لاحقًا."
         />
-      ) : items.length === 0 ? (
+      ) : isEmptySearch ? (
         <EmptyState
           title="لم يتم العثور على أصناف"
           subtitle="حاول استخدام كلمة بحث مختلفة."
         />
       ) : (
         <>
-          <ItemsGrid items={items} origin={`/Items/subTwo/${id}`} />
+          <ItemsGrid items={items} origin={origin || originPath} />
           <PaginationControls
             page={page}
             hasMore={hasMore}

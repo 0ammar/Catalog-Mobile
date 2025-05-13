@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   titleUnderline: {
     top: "30%",
-    width: "60%",
+    width: "50%",
     height: 1.5,
     backgroundColor: "rgba(0,0,0,0.3)",
     borderRadius: 8,

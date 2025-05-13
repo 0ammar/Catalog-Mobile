@@ -1,76 +1,118 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from "react";
 
 export type SearchFetchFn<T> = (
   page: number,
   searchTerm: string,
-  id?: number,
-  type?: 'subTwo' | 'subThree'
+  path?: {
+    groupId?: string;
+    subOneId?: string;
+    subTwoId?: string;
+    subThreeId?: string;
+    statusId?: string;
+  },
+  pageSize?: number
 ) => Promise<T[]>;
 
 export function useSearchList<T>(
   fetchFn: SearchFetchFn<T>,
   options?: {
-    id?: number;
-    type?: 'subTwo' | 'subThree';
+    groupId?: string;
+    subOneId?: string;
+    subTwoId?: string;
+    subThreeId?: string;
+    statusId?: string;
+    isGlobalSearch?: boolean;
+    isStatusSearch?: boolean;
     pageSize?: number;
     skipSearchIfEmpty?: boolean;
   }
 ) {
   const [data, setData] = useState<T[]>([]);
-  const [query, setQuery] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [query, setQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pageSize = options?.pageSize ?? 30;
 
-  // Debounce user input
+  // 🔁 Debounced query → searchTerm
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
     debounceTimer.current = setTimeout(() => {
       setPage(1);
       setSearchTerm(query.trim());
-    }, 800);
+    }, 1000);
+
+    return () => {
+      if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    };
   }, [query]);
 
   useEffect(() => {
-    const shouldSkip =
-      (!searchTerm && options?.skipSearchIfEmpty) &&
-      !(options?.id && options?.type);
+    const {
+      groupId,
+      subOneId,
+      subTwoId,
+      subThreeId,
+      statusId,
+      isGlobalSearch,
+      isStatusSearch,
+      skipSearchIfEmpty,
+    } = options || {};
 
-    if (shouldSkip) {
+    const isCategoryBasedSearch = !!groupId && !!subOneId;
+    const isSearchEnabled = isGlobalSearch || isStatusSearch || isCategoryBasedSearch;
+
+    if (!isSearchEnabled) {
       setData([]);
       setHasMore(false);
       return;
     }
 
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+    const shouldSkip =
+      skipSearchIfEmpty && searchTerm === "" && page === 1;
 
-        const result = await fetchFn(
-          page,
-          searchTerm,
-          options?.id,
-          options?.type
-        );
-        setData(result);
+    const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const result = await fetchFn(page, searchTerm, {
+          groupId,
+          subOneId,
+          subTwoId,
+          subThreeId,
+          statusId,
+        }, pageSize);
+
+        setData((prev) => (page === 1 ? result : [...prev, ...result]));
         setHasMore(result.length === pageSize);
       } catch (err: any) {
-        console.error('❌ Search fetch error:', err);
-        setError(err?.message || 'Search failed');
+        setError(err?.message || "Search failed");
       } finally {
         setLoading(false);
       }
     };
 
-    loadData();
-  }, [searchTerm, page]);
+    if (!shouldSkip) {
+      fetchData();
+    }
+  }, [
+    searchTerm,
+    page,
+    options?.groupId,
+    options?.subOneId,
+    options?.subTwoId,
+    options?.subThreeId,
+    options?.statusId,
+    options?.isGlobalSearch,
+    options?.isStatusSearch,
+    options?.skipSearchIfEmpty,
+  ]);
 
   return {
     data,
@@ -83,5 +125,12 @@ export function useSearchList<T>(
     page,
     setPage,
     hasMore,
+    reset: () => {
+      setQuery("");
+      setSearchTerm("");
+      setPage(1);
+      setData([]);
+      setHasMore(true);
+    }
   };
 }

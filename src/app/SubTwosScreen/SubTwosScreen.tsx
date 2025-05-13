@@ -4,24 +4,39 @@ import { useEffect, useState } from 'react';
 import { ScreenContainer, SearchBar } from '@/Components/UI';
 import { CategoryGridSection, CategoryTitle, SearchResults } from '@/Components/Shared';
 
-import { useSubTwos, useSearchList, useSmartBack } from '@/Hooks';
-import { getItems, getSubOnes, getSubThrees } from '@/Services/APIs';
-import { Item } from '@/Types';
+import { useSubTwos, useSearchList, useSmartBack, useSubOnes } from '@/Hooks';
+import { getItems, getSubThrees, searchItemsGlobal } from '@/Services/APIs';
+import { Item, SubTwo } from '@/Types';
 
-export default function SubTwoScreen() {
+
+export default function SubTwosScreen() {
   const router = useRouter();
-  const { subOneId, origin } = useLocalSearchParams<{ subOneId: string; origin?: string }>();
-  const id = Number(subOneId);
+  const { subOneId, groupId, origin } = useLocalSearchParams<{
+    subOneId: string;
+    groupId: string;
+    origin?: string;
+  }>();
 
-  useSmartBack(origin || `/SubOnesScreen/${id}`);
+  useSmartBack(origin || `/SubOnesScreen/${subOneId}`);
+
+  const [subOneName, setSubOneName] = useState<string | null>(null);
+  const [internalLoading, setInternalLoading] = useState(false);
+  const [internalError, setInternalError] = useState(false);
+
+  const { data: subOnes } = useSubOnes(groupId);
+  useEffect(() => {
+    const found = subOnes?.find((s) => s.id === subOneId);
+    setSubOneName(found?.name ?? null);
+  }, [subOnes]);
 
   const {
-    data: subTwos = [],
+    data: rawSubTwos,
     loading: loadingSubTwos,
     error: errorSubTwos,
-  } = useSubTwos(id);
+  } = useSubTwos(groupId, subOneId, !groupId || !subOneId);
 
-  // ✅ تعديل: البحث العام بدون ID أو Type
+  const subTwos: SubTwo[] = rawSubTwos ?? [];
+
   const {
     data: items,
     query,
@@ -34,50 +49,42 @@ export default function SubTwoScreen() {
     setPage,
     hasMore,
   } = useSearchList<Item>(
-    (page, searchTerm) => getItems(undefined, undefined, page, searchTerm),
-    { skipSearchIfEmpty: true }
+    (page, term) => searchItemsGlobal(term, page),
+    {
+      isGlobalSearch: true,
+      skipSearchIfEmpty: true,
+    }
   );
 
-  const [subOneName, setSubOneName] = useState<string | null>(null);
-  const [internalLoading, setInternalLoading] = useState(false);
-  const [internalError, setInternalError] = useState(false);
-
-  useEffect(() => {
-    if (!query) {
-      getSubOnes(id)
-        .then((data) => {
-          if (Array.isArray(data) && data.length > 0) {
-            setSubOneName(data[0].name);
-          }
-        })
-        .catch(() => {});
-    }
-  }, [id]);
-
-  const handleSubTwoPress = async (subTwoId: number) => {
+  const handleSubTwoPress = async (subTwoId: string) => {
     try {
       setInternalLoading(true);
 
       const [itemsData, subThreesData] = await Promise.all([
-        getItems(subTwoId, 'subTwo', 1),
-        getSubThrees(subTwoId),
+        getItems(groupId, subOneId, subTwoId, undefined, 1),
+        getSubThrees(groupId, subOneId, subTwoId),
       ]);
 
-      const target =
-        (Array.isArray(itemsData) && itemsData.length > 0) ||
-        (Array.isArray(subThreesData) && subThreesData.length === 0)
-          ? '/Items/subTwo/[id]'
-          : '/SubThreesScreen/[subTwoId]';
+
+      const shouldNavigateToSubThrees = Array.isArray(subThreesData) && subThreesData.length > 0;
+
+const target = shouldNavigateToSubThrees
+  ? '/SubThreesScreen/[subTwoId]'
+  : '/Items/subTwo/[id]';
+
 
       router.push({
         pathname: target,
         params: {
           id: subTwoId,
+          groupId,
+          subOneId,
           subTwoId,
-          origin: `/SubTwosScreen/${id}`,
+          origin: `/SubTwosScreen/${subOneId}`,
         },
       });
-    } catch {
+    } catch (err) {
+      console.error('❌ Error on SubTwo press:', err);
       setInternalError(true);
     } finally {
       setInternalLoading(false);
@@ -88,17 +95,15 @@ export default function SubTwoScreen() {
   const error = errorItems || errorSubTwos || internalError;
 
   const showSearchResults = !!searchTerm;
-  const showSubTwos = !searchTerm && Array.isArray(subTwos) && subTwos.length > 0;
-
-  const isEmptySearch =
-    showSearchResults && query.trim() === searchTerm && items.length === 0;
-  const isEmptySubTwos = !searchTerm && Array.isArray(subTwos) && subTwos.length === 0;
+  const showSubTwos = !searchTerm && subTwos.length > 0;
+  const isEmptySearch = showSearchResults && query.trim() === searchTerm && items.length === 0;
+  const isEmptySubTwos = !searchTerm && subTwos.length === 0;
 
   return (
     <ScreenContainer
       loading={loading}
       error={!!error}
-      empty={isEmptySearch || isEmptySubTwos}
+      empty={!loading && (isEmptySearch || isEmptySubTwos)}
       emptyTitle={isEmptySearch ? 'لا توجد أصناف مطابقة' : 'لا توجد تصنيفات فرعية'}
       emptySubtitle={
         isEmptySearch
@@ -121,10 +126,13 @@ export default function SubTwoScreen() {
           page={page}
           hasMore={hasMore}
           setPage={setPage}
-          origin={`/SubTwosScreen/${id}`}
+          origin={`/SubTwosScreen/${subOneId}`}
         />
       ) : showSubTwos ? (
-        <CategoryGridSection data={subTwos} onPress={handleSubTwoPress} />
+        <CategoryGridSection
+          data={subTwos}
+          onPress={(id) => handleSubTwoPress(String(id))}
+        />
       ) : null}
     </ScreenContainer>
   );

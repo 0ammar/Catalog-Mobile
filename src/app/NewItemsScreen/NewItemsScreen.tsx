@@ -1,36 +1,41 @@
 import { View, Text } from 'react-native';
-import { Header, SearchBar, ItemsGrid, PaginationControls, LoadingState } from '@/Components/UI';
+import {
+  Header,
+  SearchBar,
+  ItemsGrid,
+  PaginationControls,
+  LoadingState,
+} from '@/Components/UI';
 import { EmptyState } from '@/Components/Shared/Visuals/Visuals';
 import { useSearchList, useSmartBack } from '@/Hooks';
 import { getItemsByStatus } from '@/Services/APIs/ItemsServices';
+import { Item } from '@/Types';
 
-const NEW_STATUS_ID = 3;
+const NEW_STATUS_ID = "3";
 
 export default function NewItemsScreen() {
-  useSmartBack('/GroupsScreen/GroupsScreen');
+  useSmartBack('/GroupsScreen');
 
   const {
     data: items,
     query,
     setQuery,
-    searchTerm,
-    triggerSearch,
     page,
     setPage,
     hasMore,
     loading,
     error,
-  } = useSearchList(
-    (page) => getItemsByStatus(NEW_STATUS_ID, page),
-    { skipSearchIfEmpty: false }
+  } = useSearchList<Item>(
+    (page, _term) => getItemsByStatus(NEW_STATUS_ID, page),
+    { isStatusSearch: true, skipSearchIfEmpty: false }
   );
 
   const filteredItems = items.filter((item) =>
-    item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.itemNo?.toLowerCase().includes(searchTerm.toLowerCase())
+    item.name?.toLowerCase().includes(query.toLowerCase()) ||
+    item.itemNo?.toLowerCase().includes(query.toLowerCase())
   );
 
-  const isEmpty = query.trim() === searchTerm && filteredItems.length === 0;
+  const isEmpty = query.trim() !== '' && filteredItems.length === 0;
 
   return (
     <View style={{ flex: 1 }}>
@@ -39,17 +44,18 @@ export default function NewItemsScreen() {
       <SearchBar
         value={query}
         onChange={setQuery}
-        onSubmit={() => triggerSearch(query)}
         placeholder="يمكنك إدخال اسم أو رقم الصنف للعثور عليه"
       />
 
-      <Text style={{
-        textAlign: 'center',
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginVertical: 10,
-        color: '#A01515',
-      }}>
+      <Text
+        style={{
+          textAlign: 'center',
+          fontSize: 18,
+          fontWeight: 'bold',
+          marginVertical: 10,
+          color: '#A01515',
+        }}
+      >
         الأصناف الجديدة
       </Text>
 
@@ -67,7 +73,7 @@ export default function NewItemsScreen() {
         />
       ) : (
         <>
-          <ItemsGrid items={filteredItems} origin="/NewItemsScreen/NewItemsScreen" />
+          <ItemsGrid items={filteredItems} origin="/NewItemsScreen" />
           <PaginationControls
             page={page}
             hasMore={hasMore}

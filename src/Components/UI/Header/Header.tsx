@@ -1,16 +1,17 @@
-// Header.tsx
-import { View, Text, Image, Pressable, BackHandler, Animated } from 'react-native';
+import { View, Text, Image, Pressable, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useState, useRef } from 'react';
 import { useRouter } from 'expo-router';
 import { styles } from './Header.styles';
 import Modal from 'react-native-modal';
+import { useAuth } from '@/Hooks';
 import { styles as modalStyles } from '@/Components/UI/CustomAlertModal/CustomAlertModal.styles';
 
 
 export default function Header(): JSX.Element {
   const [exitModalVisible, setExitModalVisible] = useState(false);
   const scaleY = useRef(new Animated.Value(1)).current;
+  const { handleLogout } = useAuth();
   const router = useRouter();
 
   const handleFocusedPress = () => {
@@ -31,9 +32,10 @@ export default function Header(): JSX.Element {
       Animated.timing(scaleY, { toValue: 1, duration: 100, useNativeDriver: true }),
     ]).start(() => {
       setExitModalVisible(false);
-      BackHandler.exitApp();
+      handleLogout();
     });
   };
+  
 
   const cancelExit = () => {
     setExitModalVisible(false);
@@ -52,10 +54,12 @@ export default function Header(): JSX.Element {
         <MaterialCommunityIcons name="exit-to-app" size={25} color="#A01515" />
       </Pressable>
 
-      <Image
-        source={require('@/Assets/images/header.png')}
-        style={styles.logo}
-      />
+      <Pressable onPress={() => router.replace('/GroupsScreen/GroupsScreen')}>
+        <Image
+          source={require('@/Assets/images/header.png')}
+          style={styles.logo}
+        />
+      </Pressable>
 
       <Pressable style={styles.focusedIcon} onPress={handleFocusedPress}>
         <Image

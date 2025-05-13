@@ -2,7 +2,7 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { colors } from '@/Theme/colors';
 
 const { width } = Dimensions.get('window');
-const cardWidth = (width - 48) / 2; 
+const cardWidth = (width - 48) / 2;
 
 export const styles = StyleSheet.create({
   card: {
@@ -19,12 +19,31 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  image: {
+  imageWrapper: {
     width: '100%',
     height: cardWidth / 1.2,
     borderRadius: 14,
     backgroundColor: '#f4f4f4',
     marginBottom: 5,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 14,
+  },
+  statusIcon: {
+    position: 'absolute',
+    bottom: 5,
+    left: 7,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    zIndex: 1000,
   },
   name: {
     fontSize: 13,

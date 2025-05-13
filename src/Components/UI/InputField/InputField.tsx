@@ -42,6 +42,8 @@ export default function InputField({
           onBlur={onBlur}
           secureTextEntry={icon === 'lock'}
           textAlign="right"
+          autoCapitalize='none'
+          autoCorrect= {false}
         />
       </View>
       {error && <Text style={styles.errorText}>{error}</Text>}

@@ -15,19 +15,19 @@ export function CategoryGridSection({
   data,
   onPress,
 }: {
-  data: { id: number; name: string; imageUrl: string }[];
-  onPress: (id: number) => void;
+  data: { id: string; name: string; imageUrl: string }[];
+  onPress: (id: string) => void;
 }) {
   return (
     <ScrollView contentContainerStyle={styles.wrapper}>
-      {data.map((item) => (
+      {data.map((item, index) => (
         <CategoryComponent
-          key={item.id}
+          key={`${item.id}-${item.name}-${index}`}
           name={item.name}
           imageUrl={item.imageUrl || ''}
           onPress={() => onPress(item.id)}
         />
-     ))}
+      ))}
     </ScrollView>
   );
 }

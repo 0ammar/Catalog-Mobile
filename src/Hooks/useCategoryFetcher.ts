@@ -7,42 +7,70 @@ import {
 } from "@/Services/APIs/CategoriesServices";
 import { Group, SubOne, SubTwo, SubThree } from "@/Types";
 
-function createFetcher<T extends unknown[]>(
+// 🔁 Generic data fetcher hook
+function useFetcher<T>(
   fetchFn: () => Promise<T>,
-  deps: any[] = []
+  deps: any[] = [],
+  skip: boolean = false
 ) {
-  const [data, setData] = useState<T>([] as unknown as T);
+  const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let active = true;
+    if (skip) {
+      console.warn("⛔ Skipped fetch due to missing deps:", deps);
+      setData(null);
+      setLoading(false);
+      return;
+    }
+
+    let isActive = true;
     const fetchData = async () => {
       try {
         setLoading(true);
         const result = await fetchFn();
-        if (active) setData(result);
+        if (isActive) {
+          setData(result);
+        }
       } catch (err: any) {
-        console.error("❌ Fetch error:", err);
-        if (active) setError(err?.message || "Something went wrong");
+        if (isActive) setError(err?.message || "Something went wrong");
       } finally {
-        if (active) setLoading(false);
+        if (isActive) setLoading(false);
       }
     };
 
     fetchData();
     return () => {
-      active = false;
+      isActive = false;
     };
   }, deps);
 
   return { data, loading, error };
 }
 
-export const useGroups = () => createFetcher<Group[]>(getGroups, []);
-export const useSubOnes = (groupId: number) =>
-  createFetcher<SubOne[]>(() => getSubOnes(groupId), [groupId]);
-export const useSubTwos = (subOneId: number) =>
-  createFetcher<SubTwo[]>(() => getSubTwos(subOneId), [subOneId]);
-export const useSubThrees = (subTwoId: number) =>
-  createFetcher<SubThree[]>(() => getSubThrees(subTwoId), [subTwoId]);
+// ✅ Category hooks
+export const useGroups = () => useFetcher<Group[]>(getGroups, []);
+
+export const useSubOnes = (groupId: string) =>
+  useFetcher<SubOne[]>(() => getSubOnes(groupId), [groupId], !groupId);
+
+export const useSubTwos = (groupId: string, subOneId: string, skip = false) => {
+  const isValid = !!groupId && !!subOneId && !skip;
+  return useFetcher<SubTwo[]>(
+    () => getSubTwos(groupId, subOneId),
+    [groupId, subOneId],
+    !isValid
+  );
+};
+
+export const useSubThrees = (
+  groupId: string,
+  subOneId: string,
+  subTwoId: string
+) =>
+  useFetcher<SubThree[]>(
+    () => getSubThrees(groupId, subOneId, subTwoId),
+    [groupId, subOneId, subTwoId],
+    [groupId, subOneId, subTwoId].some((id) => !id?.trim())
+  );

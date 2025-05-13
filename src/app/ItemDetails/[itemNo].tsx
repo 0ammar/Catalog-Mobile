@@ -13,7 +13,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { ImageCarousel } from '@/Components/UI';
-import { useItemDetails, useAuth } from '@/Hooks';
+import { useItemDetails, useAuth, useSmartBack } from '@/Hooks';
 import { styles } from '@/Theme/ItemStyles/itemDetails.styles';
 import { colors } from '@/Theme/colors';
 
@@ -21,6 +21,8 @@ export default function ItemDetailsScreen() {
   const { isAdmin } = useAuth();
   const { itemNo, origin } = useLocalSearchParams<{ itemNo: string; origin?: string }>();
   const router = useRouter();
+  useSmartBack(origin || '/GroupsScreen/GroupsScreen');
+
 
   const {
     item,
@@ -66,14 +68,6 @@ export default function ItemDetailsScreen() {
     }
   };
 
-  const handleGoBack = () => {
-    if (origin) {
-      router.replace(origin as any);
-    } else {
-      router.replace('/GroupsScreen/GroupsScreen');
-    }
-  };
-
   const toggleStatusMenu = () => {
     setShowStatusMenu((prev) => {
       if (!prev) {
@@ -107,9 +101,10 @@ export default function ItemDetailsScreen() {
         >
           <View style={styles.card}>
             {/* Close Button */}
-            <Pressable onPress={handleGoBack} style={styles.closeButtonAbsolute}>
+            <Pressable onPress={() => router.back()} style={styles.closeButtonAbsolute}>
               <Ionicons name="close-circle" size={28} color="#fff" />
             </Pressable>
+
 
             {/* Admin Only - Menu Button */}
             {isAdmin && (
@@ -163,7 +158,7 @@ export default function ItemDetailsScreen() {
             )}
 
             <ImageCarousel images={images} onImagePress={handleOpenImage} />
-            
+
             <Text style={styles.name}>{item.name}</Text>
             <Text style={styles.code}>{item.itemNo}</Text>
             <Text style={styles.imageCount}>عدد الصور: {images.length}</Text>
@@ -186,10 +181,10 @@ export default function ItemDetailsScreen() {
             {isAdmin && (
               <View style={styles.buttonsInline}>
                 <Pressable style={styles.uploadBtn} onPress={handleEdit}>
-                  <Text style={styles.uploadBtnText}>حذف صور</Text>
+                  <Text style={styles.uploadBtnText}>حذف الصور</Text>
                 </Pressable>
                 <Pressable style={styles.editBtn} onPress={handleUpload}>
-                  <Text style={styles.editBtnText}>رفع صور</Text>
+                  <Text style={styles.editBtnText}>رفع الصور</Text>
                 </Pressable>
               </View>
             )}

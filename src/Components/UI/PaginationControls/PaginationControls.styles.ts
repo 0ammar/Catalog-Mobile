@@ -4,15 +4,20 @@ import { colors, spaces, texts } from '@/Theme';
 export const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    gap: spaces.md,
     paddingVertical: spaces.sm / 1.5,
-    borderTopRightRadius: spaces.rFull,
-    borderTopLeftRadius: spaces.rFull,
-    borderWidth: .08,
-    borderBottomColor: colors.background,
-    borderBottomWidth: 0
+    paddingHorizontal: spaces.md,
+    backgroundColor: '#fff',
+    borderTopEndRadius: 20,
+    borderTopStartRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    elevation: 8, 
+    position: 'relative',
+    
   },
   button: {
     paddingVertical: spaces.xs / 2,

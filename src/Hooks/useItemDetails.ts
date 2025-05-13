@@ -64,7 +64,7 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
     }
   };  
 
-  const changeStatus = async (newStatusId: number) => {
+  const changeStatus = async (newStatusId: string) => {
     if (!itemNo || typeof itemNo !== "string") return;
     try {
       setStatusLoading(true);
@@ -72,12 +72,12 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
       Animated.parallel([
         Animated.timing(itemStatusOpacity, {
           toValue: 0,
-          duration: 200,
+          duration: 150,
           useNativeDriver: true,
         }),
         Animated.timing(itemStatusScale, {
           toValue: 0.8,
-          duration: 200,
+          duration: 150,
           useNativeDriver: true,
         }),
       ]).start(async () => {
