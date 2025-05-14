@@ -6,7 +6,7 @@ node_modules/
 .expo-shared/
 
 # Environment variables
-
+.env
 
 # IDE
 .idea/
