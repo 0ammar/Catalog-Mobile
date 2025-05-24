@@ -15,7 +15,8 @@ export default function CategoryComponent({
   onPress,
   style,
 }: CategoryComponentProps) {
-  const finalImage = { uri: imageUrl };
+  const timestamp = Date.now(); // 👈 لتحديث الكاش
+  const finalImage = { uri: `${imageUrl}?t=${timestamp}` };
 
   return (
     <TouchableOpacity style={[styles.card, style]} onPress={onPress} activeOpacity={0.8}>

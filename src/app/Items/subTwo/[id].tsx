@@ -30,9 +30,9 @@ export default function ItemsScreen() {
     origin?: string;
   }>();
 
-  const parsedGroupId = groupId?.trim() || undefined;
-  const parsedSubOneId = subOneId?.trim() || undefined;
-  const parsedSubTwoId = subTwoId?.trim() || id?.trim() || undefined;
+  const parsedGroupId = String(groupId || '').trim();
+  const parsedSubOneId = String(subOneId || '').trim();
+  const parsedSubTwoId = String(subTwoId || id || '').trim();
   const parsedSubThreeId = subThreeId?.trim() || undefined;
 
   useSmartBack(origin || '/');
@@ -64,9 +64,15 @@ export default function ItemsScreen() {
       subOneId: parsedSubOneId,
       subTwoId: parsedSubTwoId,
       subThreeId: parsedSubThreeId,
-      skipSearchIfEmpty: true,
+      skipSearchIfEmpty: false,
     }
   );
+  console.log('🔍 FETCHING ITEMS WITH:', {
+    parsedGroupId,
+    parsedSubOneId,
+    parsedSubTwoId,
+    parsedSubThreeId,
+  });
 
   const isEmptySearch =
     !!searchTerm && query.trim() === searchTerm && items.length === 0;

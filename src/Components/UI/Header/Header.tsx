@@ -45,11 +45,6 @@ export default function Header(): JSX.Element {
     <View style={styles.header}>
       <View style={styles.sideLineLeft} />
 
-      <Pressable style={styles.profileIcon} onPress={() => console.log('Profile pressed')}>
-        <MaterialCommunityIcons name="account-circle-outline" size={25} color="#A01515" />
-
-      </Pressable>
-
       <Pressable style={styles.logoutIcon} onPress={handleExitRequest}>
         <MaterialCommunityIcons name="exit-to-app" size={25} color="#A01515" />
       </Pressable>

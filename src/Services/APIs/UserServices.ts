@@ -5,6 +5,7 @@ import { LoginPayload } from '@/Types'
 export const login = async (payload: LoginPayload): Promise<string> => {
   try {
     const response = await api.post<{ token: string }>("/api/auth/login", payload);
+    console.log(response)
     return response.data.token;
   } catch (error: any) {
     if (error.response?.status === 401) {

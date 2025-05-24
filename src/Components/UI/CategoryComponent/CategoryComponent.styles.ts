@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     borderTopRightRadius: spaces.rXl,
     borderBottomLeftRadius: spaces.rXl,
     borderBottomRightRadius: spaces.rMd,
-    paddingVertical: spaces.md,
+    paddingVertical: spaces.sm,
     marginBottom: spaces.md,
     shadowColor: colors.shadow,
     shadowOffset: { width: 0, height: 2 },
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: 100,
-    height: 80,
+    height: 100,
     borderRadius: 0,
     overflow: 'hidden',
     marginBottom: 0,

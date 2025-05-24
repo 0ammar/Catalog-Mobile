@@ -1,7 +1,7 @@
 import { api } from '@/Services/api';
 import { Item, GetItemDto, ItemStatuses } from '@/Types';
 
-// ✅ 1. Get paginated or searched items
+// 🔹 1. Get items (with optional search)
 export const getItems = async (
   groupId?: string,
   subOneId?: string,
@@ -11,24 +11,21 @@ export const getItems = async (
   pageSize: number = 30,
   searchTerm?: string
 ): Promise<Item[]> => {
-  console.log("📥 getItems called with:", { groupId, subOneId, subTwoId, subThreeId, page, pageSize, searchTerm });
-  try {
-    const response = await api.get<Item[]>(`/api/items${searchTerm ? '/search' : ''}`, {
-      params: {
-        groupId,
-        subOneId,
-        subTwoId,
-        subThreeId,
-        page,
-        pageSize,
-        ...(searchTerm ? { term: searchTerm } : {}),
-      },
-    });
-    return response.data;
-  } catch (err) {
-    console.error('❌ Error fetching items:', err);
-    return [];
-  }
+  const endpoint = searchTerm ? "/api/items/search" : "/api/items";
+  const response = await api.get<Item[]>(endpoint, {
+    params: {
+      groupId,
+      subOneId,
+      ...(subTwoId ? { subTwoId } : {}),
+      ...(subThreeId && subThreeId !== "items" && subThreeId !== "0"
+        ? { subThreeId }
+        : {}),
+      page,
+      pageSize,
+      ...(searchTerm ? { term: searchTerm } : {}),
+    },
+  });
+  return response.data;
 };
 
 // ✅ 2. Global search (no category)
