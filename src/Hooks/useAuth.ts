@@ -16,7 +16,6 @@ export function useAuth() {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
 
-  // ⬇️ Get The Rule From Token
   useEffect(() => {
     const fetchRole = async () => {
       try {
@@ -41,7 +40,6 @@ export function useAuth() {
     fetchRole();
   }, []);
 
-  // ⬇️ Sign In As Admin
   const handleAdminLogin = async (
     username: string,
     password: string,
@@ -61,7 +59,6 @@ export function useAuth() {
     }
   };
 
-  // ⬇️ Enter As A Guest
   const handleGuestAccess = async () => {
     await AsyncStorage.removeItem('token');
     setRole(null);

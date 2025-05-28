@@ -58,7 +58,7 @@ export default function Header(): JSX.Element {
 
       <Pressable style={styles.focusedIcon} onPress={handleFocusedPress}>
         <Image
-          source={require('@/Assets/images/focused.png')}
+          source={require('@/Assets/images/favourite-icon.png')}
           style={styles.iconImage}
           resizeMode="contain"
         />

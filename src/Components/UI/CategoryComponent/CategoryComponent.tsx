@@ -15,8 +15,7 @@ export default function CategoryComponent({
   onPress,
   style,
 }: CategoryComponentProps) {
-  const timestamp = Date.now(); // 👈 لتحديث الكاش
-  const finalImage = { uri: `${imageUrl}?t=${timestamp}` };
+  const finalImage = { uri: `${imageUrl}` };
 
   return (
     <TouchableOpacity style={[styles.card, style]} onPress={onPress} activeOpacity={0.8}>
@@ -24,7 +23,7 @@ export default function CategoryComponent({
         <Image
           source={finalImage}
           style={styles.image}
-          resizeMode="cover"
+          resizeMode="contain"
           onError={() => console.log('❌ Failed to load image:', imageUrl)}
         />
       </View>

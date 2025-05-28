@@ -3,7 +3,7 @@ import { Group, SubOne, SubTwo, SubThree } from "@/Types";
 
 // ✅ Get Groups
 export const getGroups = async (): Promise<Group[]> => {
-  console.log("📥 Fetching groups...");
+  // console.log("📥 Fetching groups...");
   try {
     const response = await api.get<Group[]>("/api/groups");
     return response.data;
@@ -15,7 +15,7 @@ export const getGroups = async (): Promise<Group[]> => {
 
 // ✅ Get SubOnes by GroupId
 export const getSubOnes = async (groupId: string): Promise<SubOne[]> => {
-  console.log(`📥 Fetching SubOnes for groupId: ${groupId}`);
+  // console.log(`📥 Fetching SubOnes for groupId: ${groupId}`);
   try {
     const response = await api.get<SubOne[]>(`/api/subones/${groupId}`);
     return response.data;
@@ -34,7 +34,7 @@ export const getSubTwos = async (
   groupId: string,
   subOneId: string
 ): Promise<SubTwo[]> => {
-  console.log("📥 Fetching SubTwos with:", { groupId, subOneId });
+  // console.log("📥 Fetching SubTwos with:", { groupId, subOneId });
   try {
     const response = await api.get<SubTwo[]>(`/api/subtwos`, {
       params: { groupId, subOneId },
@@ -52,7 +52,7 @@ export const getSubThrees = async (
   subOneId: string,
   subTwoId: string
 ): Promise<SubThree[]> => {
-  console.log("📥 Fetching SubThrees with:", { groupId, subOneId, subTwoId });
+  // console.log("📥 Fetching SubThrees with:", { groupId, subOneId, subTwoId });
   try {
     const response = await api.get<SubThree[]>(`/api/subthrees`, {
       params: { groupId, subOneId, subTwoId },
@@ -66,7 +66,7 @@ export const getSubThrees = async (
 
 // ✅ Get SubOne by Id (search in all groups)
 export const getSubOneById = async (subOneId: string): Promise<SubOne | null> => {
-  console.log(`📥 Searching for SubOne with id: ${subOneId}`);
+  // console.log(`📥 Searching for SubOne with id: ${subOneId}`);
   const allGroups = await getGroups();
   for (const group of allGroups) {
     const subOnes = await getSubOnes(group.id);

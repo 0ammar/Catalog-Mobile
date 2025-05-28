@@ -38,7 +38,6 @@ export function useSearchList<T>(
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pageSize = options?.pageSize ?? 30;
 
-  // 🔁 Debounced query → searchTerm
   useEffect(() => {
     if (debounceTimer.current) clearTimeout(debounceTimer.current);
 

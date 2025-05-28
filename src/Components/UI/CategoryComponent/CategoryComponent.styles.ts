@@ -29,8 +29,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: '70%',
-    height: '70%',
+    width: '80%',
+    height: '80%',
     textAlign: 'center',
   },
   name: {
