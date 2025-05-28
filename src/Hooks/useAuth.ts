@@ -49,7 +49,7 @@ export function useAuth() {
       setLoading(true);
       const token = await login({ username, password });
       await AsyncStorage.setItem('token', token);
-      console.log('🪪 Token:', token); 
+      // console.log('🪪 Token:', token); 
 
       router.replace('/GroupsScreen/GroupsScreen');
     } catch (error: any) {
