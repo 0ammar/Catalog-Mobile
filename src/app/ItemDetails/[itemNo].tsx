@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -11,18 +11,19 @@ import {
   Animated,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
 import { ImageCarousel } from '@/Components/UI';
 import { useItemDetails, useAuth, useSmartBack } from '@/Hooks';
 import { styles } from '@/Theme/ItemStyles/itemDetails.styles';
 import { colors } from '@/Theme/colors';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Item } from '@/Types';
 
 export default function ItemDetailsScreen() {
   const { isAdmin } = useAuth();
   const { itemNo, origin } = useLocalSearchParams<{ itemNo: string; origin?: string }>();
   const router = useRouter();
   useSmartBack(origin || '/GroupsScreen/GroupsScreen');
-
 
   const {
     item,
@@ -42,11 +43,49 @@ export default function ItemDetailsScreen() {
     showFullDescription,
     toggleDescription,
     itemStatusOpacity,
-    itemStatusScale
+    itemStatusScale,
   } = useItemDetails(itemNo);
 
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  const getFavouriteList = async (): Promise<Item[]> => {
+    try {
+      const stored = await AsyncStorage.getItem('favoriteItems');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  };
+
+  const updateFavouriteList = async (list: Item[]) => {
+    await AsyncStorage.setItem('favoriteItems', JSON.stringify(list));
+  };
+
+  const handleToggleFavorite = async () => {
+    const favList = await getFavouriteList();
+    const exists = favList.some(f => f.itemNo === item.itemNo);
+
+    const fullItem: Item = {
+      ...item,
+      status: itemStatus,
+    };
+
+    let updated: Item[] = exists
+      ? favList.filter(f => f.itemNo !== item.itemNo)
+      : [...favList.filter(f => f.itemNo !== item.itemNo), fullItem];
+
+    await updateFavouriteList(updated);
+    setIsFavorite(!exists);
+  };
+
+  useEffect(() => {
+    getFavouriteList().then(list => {
+      const found = list.some(f => f.itemNo === itemNo);
+      setIsFavorite(found);
+    });
+  }, [itemNo]);
 
   const images = item?.images ?? [];
   const description = item?.description || 'لا يوجد وصف متاح';
@@ -83,7 +122,6 @@ export default function ItemDetailsScreen() {
 
   return (
     <View style={styles.container}>
-
       {loading ? (
         <ActivityIndicator size="large" color="#444" style={styles.loadingIndicator} />
       ) : !item ? (
@@ -91,47 +129,31 @@ export default function ItemDetailsScreen() {
       ) : (
         <ScrollView
           ref={scrollRef}
-          contentContainerStyle={{
-            flexGrow: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
+          contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
           showsVerticalScrollIndicator={false}
-          style={styles.holder}
         >
           <View style={styles.card}>
-            {/* Close Button */}
-            <Pressable onPress={() => router.back()} style={styles.closeButtonAbsolute}>
-              <Ionicons name="close-circle" size={28} color="#fff" />
-            </Pressable>
-
-
-            {/* Admin Only - Menu Button */}
-            {isAdmin && (
-              <Pressable onPress={toggleStatusMenu} style={styles.menuButtonAbsolute}>
-                {statusLoading ? (
-                  <ActivityIndicator size="small" color={colors.primary} />
-                ) : (
-                  <MaterialCommunityIcons
-                    name={showStatusMenu ? 'close' : 'menu'}
-                    size={16}
-                    color={colors.primary}
-                  />
-                )}
+            <View style={styles.topActionsWrapper}>
+              {isAdmin && (
+                <Pressable onPress={toggleStatusMenu} style={styles.iconButton}>
+                  {statusLoading ? (
+                    <ActivityIndicator size="small" color="#000" />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name={showStatusMenu ? 'close' : 'menu'}
+                      size={20}
+                      color="#000"
+                    />
+                  )}
+                </Pressable>
+              )}
+              <Pressable onPress={() => router.back()} style={styles.iconButton}>
+                <Ionicons name="close" size={20} color="#000" />
               </Pressable>
-            )}
+            </View>
 
-            {/* Admin Only - Status Menu */}
             {isAdmin && showStatusMenu && (
               <>
-                <Animated.View style={[styles.arrowIndicatorWrapper, { opacity: fadeAnim }]}>
-                  <MaterialCommunityIcons
-                    name="menu-right-outline"
-                    size={25}
-                    color={colors.primary}
-                  />
-                </Animated.View>
-
                 <Animated.View style={[styles.statusMenuWrapper, { opacity: fadeAnim }]}>
                   {statuses.map((status, index) => (
                     <React.Fragment key={status.id}>
@@ -147,10 +169,7 @@ export default function ItemDetailsScreen() {
                       >
                         <Image source={{ uri: status.iconUrl }} style={styles.statusIcon} />
                       </Pressable>
-
-                      {index !== statuses.length - 1 && (
-                        <View style={styles.statusDivider} />
-                      )}
+                      {index !== statuses.length - 1 && <View style={styles.statusDivider} />}
                     </React.Fragment>
                   ))}
                 </Animated.View>
@@ -159,35 +178,6 @@ export default function ItemDetailsScreen() {
 
             <ImageCarousel images={images} onImagePress={handleOpenImage} />
 
-            <Text style={styles.name}>{item.name}</Text>
-            <Text style={styles.code}>{item.itemNo}</Text>
-            <Text style={styles.imageCount}>عدد الصور: {images.length}</Text>
-
-            <View style={styles.divider} />
-
-            <View ref={descriptionRef} style={{ alignSelf: 'center', maxWidth: 330 }}>
-              <Text selectable style={styles.descriptionHtml}>
-                {displayedDescription}
-              </Text>
-            </View>
-
-            {description.length > 120 && (
-              <Pressable onPress={toggleDescription}>
-                <Text style={styles.toggleDescription}>
-                  {showFullDescription ? 'إخفاء' : 'عرض المزيد'}
-                </Text>
-              </Pressable>
-            )}
-            {isAdmin && (
-              <View style={styles.buttonsInline}>
-                <Pressable style={styles.uploadBtn} onPress={handleEdit}>
-                  <Text style={styles.uploadBtnText}>حذف الصور</Text>
-                </Pressable>
-                <Pressable style={styles.editBtn} onPress={handleUpload}>
-                  <Text style={styles.editBtnText}>رفع الصور</Text>
-                </Pressable>
-              </View>
-            )}
             {itemStatus && (
               <Animated.View
                 style={[
@@ -202,20 +192,61 @@ export default function ItemDetailsScreen() {
               </Animated.View>
             )}
 
+            <Text style={styles.name}>{item.name}</Text>
+            <Text style={styles.code}>{item.itemNo}</Text>
+            <Text style={styles.imageCount}>عدد الصور: {images.length}</Text>
+
+            <View style={styles.divider} />
+
+            <View ref={descriptionRef} style={{ alignSelf: 'center', maxWidth: 330 }}>
+              <Text selectable style={styles.descriptionHtml}>{displayedDescription}</Text>
+            </View>
+
+            {description.length > 120 && (
+              <Pressable onPress={toggleDescription}>
+                <Text style={styles.toggleDescription}>
+                  {showFullDescription ? 'عرض اقل' : 'عرض المزيد...'}
+                </Text>
+              </Pressable>
+            )}
+
+            {isAdmin && (
+              <View style={styles.buttonsInline}>
+                <Pressable style={styles.actionBtn} onPress={handleEdit}>
+                  <Feather name="trash-2" size={20} color="#fff" />
+                </Pressable>
+                <Pressable style={styles.actionBtn} onPress={handleUpload}>
+                  <Feather name="upload" size={20} color="#fff" />
+                </Pressable>
+              </View>
+            )}
+
+            <Pressable
+              onPress={handleToggleFavorite}
+              style={[
+                styles.heartIcon,
+                isFavorite && {
+                  backgroundColor: colors.primary,
+                },
+              ]}
+            >
+              <AntDesign
+                name={isFavorite ? 'heart' : 'hearto'}
+                size={18}
+                color={isFavorite ? '#fff' : colors.primary}
+              />
+            </Pressable>
           </View>
         </ScrollView>
       )}
+
       <Modal
         visible={!!previewImageName && !!fullImageUri}
         transparent
         animationType="fade"
         onRequestClose={handleCloseImage}
       >
-        <View
-          style={styles.fullImageWrapper}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-        >
+        <View style={styles.fullImageWrapper} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <ScrollView
             maximumZoomScale={3}
             minimumZoomScale={1}

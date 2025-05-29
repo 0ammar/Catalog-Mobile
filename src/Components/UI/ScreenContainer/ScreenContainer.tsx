@@ -5,6 +5,7 @@ import CenteredScreen from '../CenteredScreen/CenteredScreen';
 import LoadingState from '../LoadingState/LoadingState';
 import { EmptyState } from '@/Components/Shared/Visuals/Visuals';
 import { styles } from './ScreenContainer.styles';
+import Footer from '../Footer/Footer';
 
 type ScreenContainerProps = {
   loading: boolean;
@@ -61,6 +62,7 @@ export const ScreenContainer = ({
     <View style={styles.container}>
       <Header />
       {renderContent()}
+      <Footer/>
     </View>
   );
 };

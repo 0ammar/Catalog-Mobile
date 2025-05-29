@@ -1,85 +1,85 @@
-import { StyleSheet } from 'react-native';
-import { colors, spaces } from '@/Theme';
+import { StyleSheet } from "react-native";
+import { colors, spaces } from "@/Theme";
 
 export const styles = StyleSheet.create({
   header: {
     height: 65,
     paddingVertical: spaces.md,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     borderBottomStartRadius: spaces.rLg,
     borderBottomEndRadius: spaces.rLg,
     zIndex: 10,
-    position: 'relative',
+    position: "relative",
     backgroundColor: colors.background,
   },
-
   logo: {
     width: 200,
     height: 55,
-    resizeMode: 'contain',
+    resizeMode: "contain",
     marginBottom: -2,
   },
-
   sideLineLeft: {
-    position: 'absolute',
+    position: "absolute",
     left: 25,
-    bottom: '60%',
+    bottom: "60%",
     width: 100,
     height: 1.5,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: "rgba(0,0,0,0.3)",
     borderRadius: 8,
     elevation: 5,
   },
-
   sideLineRight: {
-    position: 'absolute',
+    position: "absolute",
     right: 25,
-    bottom: '60%',
+    bottom: "60%",
     width: 100,
     height: 1.5,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: "rgba(0,0,0,0.3)",
     borderRadius: 8,
     elevation: 5,
   },
-
-  userIcon: {
-    position: 'absolute',
-    left: 65,
-    top: 10,
-    zIndex: 20,
-  },
-
-  focusedIcon: {
-    position: 'absolute',
-    right: 65,
-    top: 10,
-    zIndex: 20,
-  },
-
-  newIcon: {
-    position: 'absolute',
-    right: 25,
-    top: 10,
-    zIndex: 20,
-  },
-
-  profileIcon: {
-    position: 'absolute',
-    left: 65,
-    top: 10,
-    zIndex: 20,
-  },
-
-  logoutIcon: {
-    position: 'absolute',
-    left: 25,
-    top: 10,
-    zIndex: 20,
-  },
-
   iconImage: {
     width: 25,
     height: 25,
+  },
+  iconStar: {
+    width: 25,
+    height: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 50,
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    backgroundColor: "#fff",
+  },
+  iconStarImage: {
+    width: 18,
+    height: 18,
+  },
+  iconContainer: {
+    position: "absolute",
+    top: 10,
+    zIndex: 20,
+  },
+  leftIcons: {
+    position: "absolute",
+    left: 20,
+    top: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+    zIndex: 20,
+    paddingLeft: 10,
+  },
+  rightIcons: {
+    position: "absolute",
+    right: 20,
+    top: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 15,
+    zIndex: 20,
+    paddingRight: 10,
   },
 });

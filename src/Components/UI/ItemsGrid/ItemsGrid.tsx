@@ -11,10 +11,17 @@ type ItemsGridProps = {
 export default function ItemsGrid({ items, origin }: ItemsGridProps) {
   const displayedItems = items.length === 1 ? [null, ...items] : items;
 
+  const uniqueKeys = new Set(items.map(i => i.itemNo));
+  if (uniqueKeys.size !== items.length) {
+    console.warn("⚠️ في عناصر مكررة بـ itemNo داخل ItemsGrid", items);
+  }
+
   return (
     <FlatList
       data={displayedItems}
-      keyExtractor={(item, index) => item ? item.itemNo : `placeholder-${index}`}
+      keyExtractor={(item, index) =>
+        item ? `${item.itemNo}-${index}` : `placeholder-${index}`
+      }
       numColumns={2}
       contentContainerStyle={styles.contentContainer}
       columnWrapperStyle={styles.columnWrapper}
