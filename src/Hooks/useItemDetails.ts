@@ -6,7 +6,7 @@ import {
   getItemImage,
   getItemStatuses,
   updateItemStatus,
-  getItemStatus 
+  getItemStatus,
 } from "@/Services/APIs";
 import {
   BackHandler,
@@ -14,12 +14,13 @@ import {
   findNodeHandle,
   UIManager,
   View,
-  Animated
+  Animated,
 } from "react-native";
 import { ItemStatuses } from "@/Types";
-import { useAuth } from "@/Hooks/useAuth"
+import { useAuth } from "@/Hooks/useAuth";
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || Constants.expoConfig?.extra?.apiUrl;
+const BASE_URL =
+  process.env.EXPO_PUBLIC_API_URL || Constants.expoConfig?.extra?.apiUrl;
 
 export function useItemDetails(itemNo?: string | string[]) {
   const { origin } = useLocalSearchParams<{ origin?: string }>();
@@ -33,10 +34,7 @@ export function useItemDetails(itemNo?: string | string[]) {
   const [fullImageUri, setFullImageUri] = useState<string | null>(null);
   const cache = useRef<{ [key: string]: string }>({});
   const itemStatusOpacity = useRef(new Animated.Value(1)).current;
-const itemStatusScale = useRef(new Animated.Value(1)).current;
-
-
-
+  const itemStatusScale = useRef(new Animated.Value(1)).current;
   const scrollRef = useRef<ScrollView>(null);
   const descriptionRef = useRef<View | null>(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -62,13 +60,13 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
       console.error("❌ Error fetching item status:", error);
       setItemStatus(null);
     }
-  };  
+  };
 
   const changeStatus = async (newStatusId: string) => {
     if (!itemNo || typeof itemNo !== "string") return;
     try {
       setStatusLoading(true);
-  
+
       Animated.parallel([
         Animated.timing(itemStatusOpacity, {
           toValue: 0,
@@ -82,8 +80,8 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
         }),
       ]).start(async () => {
         await updateItemStatus(itemNo, newStatusId);
-        await fetchItemStatus(); 
-  
+        await fetchItemStatus();
+
         Animated.parallel([
           Animated.spring(itemStatusScale, {
             toValue: 1.1,
@@ -105,16 +103,12 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
           }).start();
         });
       });
-  
     } catch (error) {
       console.error("❌ Failed to update status:", error);
     } finally {
       setStatusLoading(false);
     }
   };
-  
-  
-  
 
   const scrollToDescription = () => {
     if (descriptionRef.current && scrollRef.current) {
@@ -212,13 +206,12 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
     fetchItem();
     fetchItemStatus();
   }, [itemNo]);
-  
+
   useEffect(() => {
     if (isAdmin) {
       fetchStatuses();
     }
   }, [isAdmin]);
-  
 
   useEffect(() => {
     const backAction = () => {
@@ -255,6 +248,6 @@ const itemStatusScale = useRef(new Animated.Value(1)).current;
     showFullDescription,
     toggleDescription,
     itemStatusOpacity,
-    itemStatusScale
+    itemStatusScale,
   };
 }

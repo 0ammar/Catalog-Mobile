@@ -109,9 +109,8 @@ export const uploadItemImages = async (itemNo: string, images: string[]) => {
 
 // ✅ 10. Delete multiple item images
 export const deleteItemImages = async (itemNo: string, images: string[]) => {
-  // console.log("🗑️ deleteItemImages:", { itemNo, images });
-  await api.delete(`/api/admin/items/${itemNo}/images`, {
-    data: images,
+  console.log("🗑️ deleteItemImages:", { itemNo, images });
+  await api.post(`/api/admin/items/${itemNo}/images/delete`, images, {
     headers: {
       'Content-Type': 'application/json',
     },

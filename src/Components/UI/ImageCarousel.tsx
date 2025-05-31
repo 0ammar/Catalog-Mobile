@@ -13,7 +13,13 @@ interface Props {
 
 export const ImageCarousel = ({ images, onImagePress }: Props) => {
   if (!images.length) {
-    return <Image source={fallbackImage} style={styles.noImage} resizeMode="contain" />;
+    return (
+      <Image
+        source={fallbackImage}
+        style={[styles.noImage, { backgroundColor: '#fff' }]}
+        resizeMode="contain"
+      />
+    );
   }
 
   return (
@@ -26,14 +32,14 @@ export const ImageCarousel = ({ images, onImagePress }: Props) => {
         <Pressable onPress={() => onImagePress(item)}>
           <Image
             source={{ uri: `${process.env.EXPO_PUBLIC_API_URL}/UploadedImages/${item}` }}
-            style={styles.image}
+            style={[styles.image, { backgroundColor: '#fff' }]}
             resizeMode="contain"
           />
         </Pressable>
       )}
       loop
       autoPlay={false}
-      style={{ marginBottom: 10 }}
+      style={{ marginBottom: 10, backgroundColor: '#fff' }}
     />
   );
 };

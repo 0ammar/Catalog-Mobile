@@ -41,33 +41,41 @@ export default function EditImagesScreen() {
   };
 
   const handleSave = async () => {
-    if (!itemNo || markedForDeletion.length === 0) return;
+  console.log('🟡 handleSave started');
 
-    try {
-      setLoading(true);
+  if (!itemNo || markedForDeletion.length === 0) {
+    console.log('⛔️ No itemNo or no images to delete');
+    return;
+  }
 
-      const cleanImageNames = markedForDeletion.map((url) => {
-        const parts = url.split('/');
-        return parts[parts.length - 1];
-      });
+  try {
+    setLoading(true);
+    console.log('🟢 Marked for deletion:', markedForDeletion);
 
-      await deleteItemImages(itemNo, cleanImageNames);
+    const cleanImageNames = markedForDeletion.map((url) => {
+      const parts = url.split('/');
+      const name = parts[parts.length - 1];
+      console.log('📸 Extracted image name:', name);
+      return name;
+    });
 
-      // ✅ بعد الحذف ارجع إلى شاشة التفاصيل مع تحديث البيانات
-      router.replace({
-        pathname: `/ItemDetails/[itemNo]`,
-        params: { itemNo, origin: origin || '/GroupsScreen', refetch: '1' },
-      });
-    } catch (error) {
-      setModalData({
-        title: '❌ فشل في الحذف',
-        message: 'حدث خلل أثناء محاولة حذف الصور، يرجى المحاولة لاحقًا.',
-      });
-      setModalVisible(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log('🛠️ Clean image names sent to API:', cleanImageNames);
+
+    await deleteItemImages(itemNo, cleanImageNames);
+    console.log('✅ Images deleted, navigating...');
+
+    router.replace({
+      pathname: `/ItemDetails/[itemNo]`,
+      params: { itemNo, origin: origin || '/GroupsScreen', refetch: '1' },
+    });
+
+  } catch (error) {
+    console.log('❌ Error deleting images:', error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   if (!itemNo) {
     return (

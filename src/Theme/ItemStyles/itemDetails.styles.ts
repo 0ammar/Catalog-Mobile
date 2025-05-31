@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "#f9f9f9",
     alignSelf: "center",
+    
   },
   noImage: {
     width: imageSize,
@@ -208,4 +209,5 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  
 });

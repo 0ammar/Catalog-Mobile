@@ -8,6 +8,7 @@ interface Props {
   title: string;
   message: string;
   onClose: () => void;
+  children?: React.ReactNode;
 }
 
 export default function CustomAlertModal({
@@ -15,6 +16,7 @@ export default function CustomAlertModal({
   title,
   message,
   onClose,
+  children,
 }: Props) {
   return (
     <Modal
@@ -23,13 +25,23 @@ export default function CustomAlertModal({
       animationIn="zoomIn"
       animationOut="zoomOut"
       backdropOpacity={0.3}
+      style={{
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 0, // أهم سطر: يخلي المودال يلتزم بمركز الشاشة بدون padding خارجي
+      }}
     >
-      <View style={styles.modal}>
+      <View style={[styles.modal, { width: '85%' }]}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.message}>{message}</Text>
-        <Pressable onPress={onClose} style={styles.button}>
-          <Text style={styles.buttonText}>حسنًا</Text>
-        </Pressable>
+
+        {children ? (
+          children
+        ) : (
+          <Pressable onPress={onClose} style={styles.button}>
+            <Text style={styles.buttonText}>حسنًا</Text>
+          </Pressable>
+        )}
       </View>
     </Modal>
   );

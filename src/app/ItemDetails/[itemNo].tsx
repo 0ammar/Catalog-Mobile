@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import ImageViewing from 'react-native-image-viewing';
 import {
   View,
   Text,
@@ -9,6 +10,7 @@ import {
   Modal,
   GestureResponderEvent,
   Animated,
+  Alert,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons, MaterialCommunityIcons, AntDesign, Feather } from '@expo/vector-icons';
@@ -131,6 +133,7 @@ export default function ItemDetailsScreen() {
           ref={scrollRef}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}
           showsVerticalScrollIndicator={false}
+
         >
           <View style={styles.card}>
             <View style={styles.topActionsWrapper}>
@@ -159,9 +162,31 @@ export default function ItemDetailsScreen() {
                     <React.Fragment key={status.id}>
                       <Pressable
                         onPress={() => {
-                          changeStatus(status.id);
-                          setShowStatusMenu(false);
+                          if (status.id === '1') {
+                            Alert.alert(
+                              '',
+                              "🟡 سيتم إخفاء المنتج تماما، هل أنت متأكد؟",
+                              [
+                                {
+                                  text: '✔',
+                                  onPress: () => {
+                                    changeStatus(status.id);
+                                    setShowStatusMenu(false);
+                                  },
+                                },
+                                { text: '✖', style: 'cancel' },
+
+                              ]
+                            );
+
+
+                          } else {
+                            changeStatus(status.id);
+                            setShowStatusMenu(false);
+                          }
                         }}
+
+
                         style={({ pressed }) => [
                           styles.statusIconWrapper,
                           pressed && { opacity: 0.7 },
@@ -248,14 +273,17 @@ export default function ItemDetailsScreen() {
       >
         <View style={styles.fullImageWrapper} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
           <ScrollView
-            maximumZoomScale={3}
+            style={{ flex: 1 }}
             minimumZoomScale={1}
-            decelerationRate="fast"
-            contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-            bounces={false}
+            maximumZoomScale={5}
+            pinchGestureEnabled={true}
+            scrollEnabled={true}
             showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
+            centerContent={true}
+            contentContainerStyle={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
           >
+
             <Image
               source={{ uri: fullImageUri || '' }}
               style={styles.fullImage}
