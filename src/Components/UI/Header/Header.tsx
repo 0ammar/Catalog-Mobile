@@ -16,6 +16,7 @@ export default function Header(): JSX.Element {
   const handleFocusedPress = () => router.push('/FocusedItemsScreen/FocusedItemsScreen');
   const handleNewPress = () => router.push('/NewItemsScreen/NewItemsScreen');
   const handleFavouritePress = () => router.push('/FavouriteItemsScreen/FavouriteItemsScreen');
+
   const handleExitRequest = () => setExitModalVisible(true);
   const confirmExit = () => {
     Animated.sequence([
@@ -26,6 +27,7 @@ export default function Header(): JSX.Element {
       handleLogout();
     });
   };
+  
   const cancelExit = () => setExitModalVisible(false);
 
   return (

@@ -1,4 +1,6 @@
-import { View, Text, Pressable } from 'react-native';
+import { useRef, useState } from 'react'
+import { View, Text, Pressable, Animated } from 'react-native';
+import Modal from 'react-native-modal'
 import {
   Header,
   SearchBar,
@@ -8,9 +10,15 @@ import {
 } from '@/Components/UI';
 import { EmptyState } from '@/Components/Shared/Visuals/Visuals';
 import { useFavouriteItems } from '@/Hooks';
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { styles as modalStyles } from '@/Components/UI/CustomAlertModal/CustomAlertModal.styles';
+
 
 export default function FavouriteItemsScreen() {
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const scaleY = useRef(new Animated.Value(1)).current;
+
   const {
     items,
     loading,
@@ -22,6 +30,12 @@ export default function FavouriteItemsScreen() {
     total,
     clearFavourites,
   } = useFavouriteItems();
+
+  const confirmClear = () => {
+    clearFavourites();
+    setShowConfirmModal(false);
+  }
+  const confirmClose = () => setShowConfirmModal(false);
 
   return (
     <View style={{ flex: 1 }}>
@@ -49,7 +63,7 @@ export default function FavouriteItemsScreen() {
       {total > 0 && (
         <View style={{ alignItems: 'center', marginBottom: 5 }}>
           <Pressable
-            onPress={clearFavourites}
+            onPress={() => setShowConfirmModal(true)}
             style={{
               padding: 8,
               borderRadius: 8,
@@ -85,6 +99,30 @@ export default function FavouriteItemsScreen() {
           />
         </>
       )}
-    </View>
+
+      <Modal
+        isVisible={showConfirmModal}
+        onBackdropPress={confirmClose}
+        animationIn='zoomIn'
+        animationOut='zoomOut'
+        backdropOpacity={0.3}
+      >
+        <View style={modalStyles.modal}>
+          <Text style={modalStyles.title}>تأكيد الحذف</Text>
+          <Text style={modalStyles.message}>هل انت متأكد أنك تريد حذف القائمة</Text>
+          <View style={{ flexDirection: 'row', gap: 30, marginTop: 10 }}>
+            <Animated.View style={{ transform: [{ scale: scaleY }] }}>
+              <Pressable onPress={confirmClear} style={[modalStyles.button, { backgroundColor: '#A01515' }]}>
+                <MaterialCommunityIcons name='check' size={20} color="#fff" />
+              </Pressable>
+            </Animated.View>
+            <Pressable onPress={confirmClose} style={modalStyles.button}>
+              <MaterialCommunityIcons name='close' size={20} color="#fff" />
+            </Pressable>
+          </View>
+        </View>
+      </Modal >
+
+    </View >
   );
 }

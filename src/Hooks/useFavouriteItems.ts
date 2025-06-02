@@ -36,11 +36,9 @@ const mapDtoToItem = (dto: any): Item => {
     subOneId: dto.subOneId ?? "",
     subTwoId: dto.subTwoId ?? "",
     subThreeId: dto.subThreeId ?? "",
-    status: dto.status ?? undefined, // مباشرة بدون ما تعيد بناءها
+    status: dto.status ?? undefined,
   };
 };
-
-
 
 export const useFavouriteItems = () => {
   const [items, setItems] = useState<Item[]>([]);
