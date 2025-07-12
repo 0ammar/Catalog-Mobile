@@ -7,6 +7,7 @@ import { CategoryGridSection, CategoryTitle, SearchResults } from '@/Components/
 import { useSubTwos, useSearchList, useSmartBack, useSubOnes } from '@/Hooks';
 import { getItems, getSubThrees, searchItemsGlobal } from '@/Services/APIs';
 import { Item, SubTwo } from '@/Types';
+import { View } from 'react-native';
 
 
 export default function SubTwosScreen() {
@@ -133,7 +134,7 @@ const target = shouldNavigateToSubThrees
           data={subTwos}
           onPress={(id) => handleSubTwoPress(String(id))}
         />
-      ) : null}
+      ) : <View/>}
     </ScreenContainer>
   );
 }

@@ -12,6 +12,7 @@ import { CategoryGridSection, CategoryTitle } from '@/Components/Shared';
 import { useSubThrees, useSearchList, useSmartBack } from '@/Hooks';
 import { searchItemsGlobal , getSubTwos } from '@/Services/APIs';
 import { Item, SubTwo } from '@/Types';
+import { View } from 'react-native';
 
 export default function SubThreesScreen() {
   const router = useRouter();
@@ -107,7 +108,7 @@ export default function SubThreesScreen() {
       
 
       {showSearchResults ? (
-        <>
+        <View>
           <ItemsGrid items={items} origin={`/SubThreesScreen/${subTwoIdStr}`} />
           <PaginationControls
             page={page}
@@ -115,7 +116,7 @@ export default function SubThreesScreen() {
             onNext={() => setPage((p) => p + 1)}
             onBack={() => setPage((p) => Math.max(1, p - 1))}
           />
-        </>
+        </View>
       ) : showSubThrees ? (
         <CategoryGridSection
         data={subThrees ?? []}
@@ -135,7 +136,7 @@ export default function SubThreesScreen() {
         }}
       />
       
-      ) : null}
+      ) : <View/>}
     </ScreenContainer>
   );
 }

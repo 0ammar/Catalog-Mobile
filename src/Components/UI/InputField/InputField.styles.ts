@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#fdfdfd',
     paddingHorizontal: 14,
     paddingVertical: 10,
+    marginHorizontal: 20,
     marginBottom: 4,
   },
   icon: {
@@ -21,11 +22,14 @@ export const styles = StyleSheet.create({
     color: '#333',
     paddingVertical: 2,
     textAlign: 'right',
+    marginHorizontal: 20,
+
   },
   errorText: {
     color: '#d00',
     fontSize: 13,
     textAlign: 'right',
+    marginHorizontal: 20,
     marginTop: 2,
   },
 });

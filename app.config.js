@@ -1,6 +1,8 @@
 import 'dotenv/config';
+
 export default {
   expo: {
+    owner: "0ammar",
     name: "Catalog",
     slug: "Almutasaweq",
     version: "1.0.0",
@@ -10,15 +12,20 @@ export default {
     newArchEnabled: true,
 
     ios: {
-      supportsTablet: true
-    },
+      bundleIdentifier: "com.ammar.almutasaweq",
+      supportsTablet: true,
+      infoPlist: {
+        ITSAppUsesNonExemptEncryption: false
+      }
+    }
+    ,
 
     android: {
       package: "com.ammar.almutasaweq",
       usesCleartextTraffic: true,
       adaptiveIcon: {
         foregroundImage: "./src/Assets/images/app-icon.png",
-        backgroundColor:'#f8f9fa'
+        backgroundColor: '#f8f9fa'
       }
     },
 
@@ -49,12 +56,11 @@ export default {
       url: "https://u.expo.dev/008a3683-266a-471c-b6e8-1db6c493eaa7"
     },
 
-    // ✅ FIXED: Changed from { policy: "appVersion" } to fixed string
     runtimeVersion: "1.0.0",
 
     extra: {
       eas: {
-        projectId: "b6eeaa7b-5659-4dd8-a1b7-f25f4f5b13c6" 
+        projectId: "b6eeaa7b-5659-4dd8-a1b7-f25f4f5b13c6"
       },
       EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL
     }

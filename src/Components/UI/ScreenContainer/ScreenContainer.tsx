@@ -61,8 +61,11 @@ export const ScreenContainer = ({
   return (
     <View style={styles.container}>
       <Header />
-      {renderContent()}
-      <Footer/>
+      <View style={{ flex: 1 }}>
+        {children}
+      </View>
+      <Footer />
     </View>
+
   );
 };

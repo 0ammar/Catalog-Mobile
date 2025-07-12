@@ -1,58 +1,57 @@
-import { StyleSheet, Dimensions } from 'react-native';
-import { colors } from '@/Theme/colors';
+import { StyleSheet, Dimensions, Platform } from "react-native";
+import { colors } from "@/Theme/colors";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 const cardWidth = (width - 48) / 2;
 
 export const styles = StyleSheet.create({
   card: {
     width: cardWidth,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 12,
     marginBottom: 10,
     elevation: 3,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   imageWrapper: {
-    width: '100%',
+    width: "100%",
     height: cardWidth / 1.2,
     borderRadius: 14,
-    backgroundColor: '#f4f4f4',
+    backgroundColor: "#f4f4f4",
     marginBottom: 5,
-    position: 'relative',
-    overflow: 'hidden',
+    position: "relative",
+    overflow: "hidden",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 14,
   },
   statusIcon: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 5,
     left: 7,
-    width: 18,
-    height: 18,
+    width: Platform.OS === "ios" ? 22 : 18,
+    height: Platform.OS === "ios" ? 22 : 18,
     zIndex: 1000,
-    padding: 5,
   },
   name: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.text,
-    textAlign: 'center',
+    textAlign: "center",
   },
   code: {
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.primary,
-    textAlign: 'center',
+    textAlign: "center",
     marginTop: 2,
   },
 });

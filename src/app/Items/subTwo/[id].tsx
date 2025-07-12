@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import {

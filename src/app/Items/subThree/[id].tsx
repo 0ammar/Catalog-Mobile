@@ -1,4 +1,4 @@
-import { View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 
 import {
@@ -77,7 +77,7 @@ export default function ItemsScreen() {
     items.length === 0;
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
       <SearchBar
@@ -113,6 +113,6 @@ export default function ItemsScreen() {
           />
         </>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

@@ -4,6 +4,7 @@ import { CategoryGridSection, SearchResults } from '@/Components/Shared';
 import { useGroups, useSearchList } from '@/Hooks';
 import { searchItemsGlobal } from '@/Services/APIs/ItemsServices';
 import { Item } from '@/Types';
+import { View } from 'react-native';
 
 export default function GroupsScreen() {
   const router = useRouter();
@@ -48,7 +49,6 @@ export default function GroupsScreen() {
   const isEmptyCategories =
     !searchTerm && (categories?.length ?? 0) === 0;
 
-  // ✅ لا تظهر empty إذا المستخدم عم بكتب (debounce ما خلص)
   const preventEmptyWhileTyping =
     query.trim() !== '' && searchTerm !== query.trim();
 
@@ -97,7 +97,7 @@ export default function GroupsScreen() {
             })
           }
         />
-      ) : null}
+      ) : <View/>}
     </ScreenContainer>
   );
 }

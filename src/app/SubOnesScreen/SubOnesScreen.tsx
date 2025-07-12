@@ -4,26 +4,13 @@ import { CategoryGridSection, CategoryTitle, SearchResults } from '@/Components/
 import { useGroups, useSubOnes, useSearchList, useSmartBack } from '@/Hooks';
 import { searchItemsGlobal } from '@/Services/APIs/ItemsServices';
 import { Item } from '@/Types';
+import { View } from 'react-native';
 
 export default function SubOneScreen() {
   const router = useRouter();
   const { groupId, origin } = useLocalSearchParams<{ groupId: string; origin?: string }>();
 
   useSmartBack(origin || '/GroupsScreen');
-
-  if (!groupId) {
-    return (
-      <ScreenContainer
-        loading={false}
-        error
-        empty
-        emptyTitle="معرّف المجموعة غير موجود"
-        emptySubtitle="الرجاء العودة والمحاولة مرة أخرى."
-      >
-        <></>
-      </ScreenContainer>
-    );
-  }
 
   const { data: groups } = useGroups();
   const {
@@ -109,7 +96,7 @@ export default function SubOneScreen() {
             })
           }
         />
-      ) : null}
+      ) : <View/>}
     </ScreenContainer>
   );
 }

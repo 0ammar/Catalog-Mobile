@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, SafeAreaView } from 'react-native';
 import {
   Header,
   SearchBar,
@@ -11,7 +11,7 @@ import { useSearchList, useSmartBack } from '@/Hooks';
 import { getItemsByStatus } from '@/Services/APIs/ItemsServices';
 import { Item } from '@/Types';
 
-const NEW_STATUS_ID = "3";
+const NEW_STATUS_ID = '3';
 
 export default function NewItemsScreen() {
   useSmartBack('/GroupsScreen');
@@ -26,19 +26,42 @@ export default function NewItemsScreen() {
     loading,
     error,
   } = useSearchList<Item>(
-    (page, _term) => getItemsByStatus(NEW_STATUS_ID, page),
+    (page) => getItemsByStatus(NEW_STATUS_ID, page),
     { isStatusSearch: true, skipSearchIfEmpty: false }
   );
 
-  const filteredItems = items.filter((item) =>
-    item.name?.toLowerCase().includes(query.toLowerCase()) ||
-    item.itemNo?.toLowerCase().includes(query.toLowerCase())
+  const filteredItems = items.filter(
+    (item) =>
+      item.name?.toLowerCase().includes(query.toLowerCase()) ||
+      item.itemNo?.toLowerCase().includes(query.toLowerCase())
   );
 
   const isEmpty = query.trim() !== '' && filteredItems.length === 0;
 
+  if (loading) {
+    return <LoadingState message="جاري تحميل الأصناف..." />;
+  }
+
+  if (error) {
+    return (
+      <EmptyState
+        title="حدث خطأ ما"
+        subtitle="يرجى التحقق من الاتصال أو المحاولة لاحقًا."
+      />
+    );
+  }
+
+  if (isEmpty) {
+    return (
+      <EmptyState
+        title="لا يوجد أصناف جديدة"
+        subtitle="لم يتم العثور على أصناف ضمن هذه الفئة."
+      />
+    );
+  }
+
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
       <SearchBar
@@ -59,29 +82,14 @@ export default function NewItemsScreen() {
         الأصناف الجديدة
       </Text>
 
-      {loading ? (
-        <LoadingState message="جاري تحميل الأصناف..." />
-      ) : error ? (
-        <EmptyState
-          title="حدث خطأ ما"
-          subtitle="يرجى التحقق من الاتصال أو المحاولة لاحقًا."
-        />
-      ) : isEmpty ? (
-        <EmptyState
-          title="لا يوجد أصناف جديدة"
-          subtitle="لم يتم العثور على أصناف ضمن هذه الفئة."
-        />
-      ) : (
-        <>
-          <ItemsGrid items={filteredItems} origin="/NewItemsScreen" />
-          <PaginationControls
-            page={page}
-            hasMore={hasMore}
-            onNext={() => setPage((p) => p + 1)}
-            onBack={() => setPage((p) => Math.max(1, p - 1))}
-          />
-        </>
-      )}
-    </View>
+      <ItemsGrid items={filteredItems} origin="/NewItemsScreen" />
+
+      <PaginationControls
+        page={page}
+        hasMore={hasMore}
+        onNext={() => setPage((p) => p + 1)}
+        onBack={() => setPage((p) => Math.max(1, p - 1))}
+      />
+    </SafeAreaView>
   );
 }

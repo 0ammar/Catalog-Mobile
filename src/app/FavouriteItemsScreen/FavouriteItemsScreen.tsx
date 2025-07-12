@@ -1,6 +1,6 @@
-import { useRef, useState } from 'react'
-import { View, Text, Pressable, Animated } from 'react-native';
-import Modal from 'react-native-modal'
+import { useRef, useState } from 'react';
+import { View, Text, Pressable, Animated, SafeAreaView } from 'react-native';
+import Modal from 'react-native-modal';
 import {
   Header,
   SearchBar,
@@ -13,9 +13,7 @@ import { useFavouriteItems } from '@/Hooks';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import { styles as modalStyles } from '@/Components/UI/CustomAlertModal/CustomAlertModal.styles';
 
-
 export default function FavouriteItemsScreen() {
-
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const scaleY = useRef(new Animated.Value(1)).current;
 
@@ -34,11 +32,12 @@ export default function FavouriteItemsScreen() {
   const confirmClear = () => {
     clearFavourites();
     setShowConfirmModal(false);
-  }
+  };
+
   const confirmClose = () => setShowConfirmModal(false);
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <Header />
 
       <SearchBar
@@ -52,9 +51,8 @@ export default function FavouriteItemsScreen() {
           textAlign: 'center',
           fontSize: 18,
           fontWeight: 'bold',
-          marginBottom: 10,
           color: '#A01515',
-          marginTop: 10
+          marginVertical: 10,
         }}
       >
         قائمة المفضلة
@@ -81,11 +79,11 @@ export default function FavouriteItemsScreen() {
         <EmptyState title="حدث خطأ" subtitle={error} />
       ) : items.length === 0 ? (
         <EmptyState
-          title={query ? "لا يوجد نتائج" : "قائمة المفضلة فارغة"}
+          title={query ? 'لا يوجد نتائج' : 'قائمة المفضلة فارغة'}
           subtitle={
             query
               ? `لا يوجد نتائج تطابق "${query}" ضمن المفضلة.`
-              : "لم تقم بإضافة أي منتجات بعد."
+              : 'لم تقم بإضافة أي منتجات بعد.'
           }
         />
       ) : (
@@ -103,26 +101,28 @@ export default function FavouriteItemsScreen() {
       <Modal
         isVisible={showConfirmModal}
         onBackdropPress={confirmClose}
-        animationIn='zoomIn'
-        animationOut='zoomOut'
+        animationIn="zoomIn"
+        animationOut="zoomOut"
         backdropOpacity={0.3}
       >
         <View style={modalStyles.modal}>
           <Text style={modalStyles.title}>تأكيد الحذف</Text>
-          <Text style={modalStyles.message}>هل انت متأكد أنك تريد حذف القائمة</Text>
+          <Text style={modalStyles.message}>هل أنت متأكد أنك تريد حذف القائمة؟</Text>
           <View style={{ flexDirection: 'row', gap: 30, marginTop: 10 }}>
             <Animated.View style={{ transform: [{ scale: scaleY }] }}>
-              <Pressable onPress={confirmClear} style={[modalStyles.button, { backgroundColor: '#A01515' }]}>
-                <MaterialCommunityIcons name='check' size={20} color="#fff" />
+              <Pressable
+                onPress={confirmClear}
+                style={[modalStyles.button, { backgroundColor: '#A01515' }]}
+              >
+                <MaterialCommunityIcons name="check" size={20} color="#fff" />
               </Pressable>
             </Animated.View>
             <Pressable onPress={confirmClose} style={modalStyles.button}>
-              <MaterialCommunityIcons name='close' size={20} color="#fff" />
+              <MaterialCommunityIcons name="close" size={20} color="#fff" />
             </Pressable>
           </View>
         </View>
-      </Modal >
-
-    </View >
+      </Modal>
+    </SafeAreaView>
   );
 }

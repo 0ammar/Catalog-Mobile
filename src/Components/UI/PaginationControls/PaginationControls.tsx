@@ -1,6 +1,5 @@
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity, Text, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { colors } from '@/Theme/colors';
 import { styles } from './PaginationControls.styles';
 
 type PaginationControlsProps = {
@@ -26,7 +25,7 @@ export default function PaginationControls({
         disabled={page === 1}
         style={[
           styles.button,
-          { backgroundColor: page === 1 ? colors.borderDark : colors.primary },
+          page === 1 ? styles.disabledButton : styles.activeButton,
         ]}
       >
         <Icon name="arrow-back" size={20} color="#fff" />
@@ -41,7 +40,7 @@ export default function PaginationControls({
         disabled={!hasMore}
         style={[
           styles.button,
-          { backgroundColor: hasMore ? colors.primary : colors.borderDark },
+          hasMore ? styles.activeButton : styles.disabledButton,
         ]}
       >
         <Icon name="arrow-forward" size={20} color="#fff" />

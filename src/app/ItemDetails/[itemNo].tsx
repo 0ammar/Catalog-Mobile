@@ -156,10 +156,10 @@ export default function ItemDetailsScreen() {
             </View>
 
             {isAdmin && showStatusMenu && (
-              <>
+              <View>
                 <Animated.View style={[styles.statusMenuWrapper, { opacity: fadeAnim }]}>
                   {statuses.map((status, index) => (
-                    <React.Fragment key={status.id}>
+                    <View key={status.id}>
                       <Pressable
                         onPress={() => {
                           if (status.id === '1') {
@@ -195,10 +195,10 @@ export default function ItemDetailsScreen() {
                         <Image source={{ uri: status.iconUrl }} style={styles.statusIcon} />
                       </Pressable>
                       {index !== statuses.length - 1 && <View style={styles.statusDivider} />}
-                    </React.Fragment>
+                    </View>
                   ))}
                 </Animated.View>
-              </>
+              </View>
             )}
 
             <ImageCarousel images={images} onImagePress={handleOpenImage} />

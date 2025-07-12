@@ -86,12 +86,14 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowRadius: 5,
     elevation: 4,
+    marginHorizontal: 20,
   },
 
   buttonText: {
     color: "white",
     fontSize: 17,
     fontWeight: '700',
+    
   },
 
   backButton: {

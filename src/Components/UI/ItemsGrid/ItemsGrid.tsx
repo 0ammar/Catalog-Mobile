@@ -9,12 +9,8 @@ type ItemsGridProps = {
 };
 
 export default function ItemsGrid({ items, origin }: ItemsGridProps) {
-  const displayedItems = items.length === 1 ? [null, ...items] : items;
 
-  const uniqueKeys = new Set(items.map(i => i.itemNo));
-  if (uniqueKeys.size !== items.length) {
-    console.warn("⚠️ في عناصر مكررة بـ itemNo داخل ItemsGrid", items);
-  }
+  const displayedItems = items.length === 1 ? [null, ...items] : items;
 
   return (
     <FlatList
@@ -26,9 +22,11 @@ export default function ItemsGrid({ items, origin }: ItemsGridProps) {
       contentContainerStyle={styles.contentContainer}
       columnWrapperStyle={styles.columnWrapper}
       renderItem={({ item }) =>
-        item
-          ? <ItemCard item={item} origin={origin} />
-          : <View style={styles.placeholder} />
+        item ? (
+          <ItemCard item={item} origin={origin} />
+        ) : (
+          <View style={styles.placeholder} />
+        )
       }
       showsVerticalScrollIndicator={false}
     />

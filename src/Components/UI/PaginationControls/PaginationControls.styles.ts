@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { colors, spaces, texts } from '@/Theme';
 
 export const styles = StyleSheet.create({
@@ -6,26 +6,40 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: spaces.sm / 1.5,
+    paddingVertical: spaces.sm,
     paddingHorizontal: spaces.md,
-    backgroundColor: '#fff',
-    borderTopEndRadius: 20,
-    borderTopStartRadius: 20,
+    backgroundColor: colors.surface,
+    borderTopStartRadius: spaces.rLg,
+    borderTopEndRadius: spaces.rLg,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.07,
-    shadowRadius: 6,
-    position: 'relative',
-    
+    shadowOpacity: 0.06,
+    shadowRadius: 5,
+    ...Platform.select({
+      android: {
+        elevation: 8,
+      },
+    }),
+    zIndex: 10,
   },
+
   button: {
-    paddingVertical: spaces.xs / 2,
+    paddingVertical: spaces.xs,
     paddingHorizontal: spaces.sm,
     borderRadius: spaces.rSm,
   },
+
+  activeButton: {
+    backgroundColor: colors.primary,
+  },
+
+  disabledButton: {
+    backgroundColor: colors.borderDark,
+  },
+
   pageInfo: {
-    color: "#333",
-    fontWeight: texts.fontWeightMedium,
+    color: colors.mutedText,
     fontSize: texts.medium,
+    fontWeight: texts.fontWeightMedium,
   },
 });
