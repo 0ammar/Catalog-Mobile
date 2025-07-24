@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Item, ItemStatuses } from "@/Types";
+import { Item } from "@/Types";
 
 const STORAGE_KEY = "favoriteItems";
 const ITEMS_PER_PAGE = 10;

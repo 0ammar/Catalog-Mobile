@@ -137,8 +137,8 @@ export const styles = StyleSheet.create({
   statusMenuWrapper: {
     position: "absolute",
     flexDirection: "row",
-    top: 10,
-    left: 72.5,
+    top: -40,
+    left: "-25%",
     backgroundColor: "#fff",
     borderRadius: 12,
     paddingHorizontal: 6,
@@ -151,13 +151,13 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  statusDivider: {
-    width: 1.5,
-    height: 18,
-    backgroundColor: colors.primary,
-    alignSelf: "center",
-    borderRadius: 1,
-  },
+  // statusDivider: {
+  //   width: 1.5,
+  //   height: 18,
+  //   backgroundColor: colors.primary,
+  //   alignSelf: "center",
+  //   borderRadius: 1,
+  // },
   arrowIndicatorWrapper: {
     position: "absolute",
     top: 5.5,

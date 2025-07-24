@@ -1,5 +1,4 @@
 import React, { useRef, useState, useEffect } from 'react';
-import ImageViewing from 'react-native-image-viewing';
 import {
   View,
   Text,

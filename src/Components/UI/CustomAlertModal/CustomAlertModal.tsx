@@ -28,7 +28,7 @@ export default function CustomAlertModal({
       style={{
         justifyContent: 'center',
         alignItems: 'center',
-        margin: 0, // أهم سطر: يخلي المودال يلتزم بمركز الشاشة بدون padding خارجي
+        margin: 0, 
       }}
     >
       <View style={[styles.modal, { width: '85%' }]}>
