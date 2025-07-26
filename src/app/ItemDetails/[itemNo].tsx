@@ -193,7 +193,7 @@ export default function ItemDetailsScreen() {
                       >
                         <Image source={{ uri: status.iconUrl }} style={styles.statusIcon} />
                       </Pressable>
-                      {index !== statuses.length - 1 && <View style={styles.statusDivider} />}
+                      {index !== statuses.length - 1 && <View/>}
                     </View>
                   ))}
                 </Animated.View>
